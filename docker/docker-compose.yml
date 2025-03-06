@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: astrodb
+    restart: always
+    environment:
+      POSTGRES_USER: astro_user
+      POSTGRES_PASSWORD: astro_password
+      POSTGRES_DB: astrodb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: astroapi
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
