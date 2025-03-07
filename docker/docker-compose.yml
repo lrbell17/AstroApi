@@ -3,11 +3,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: astrodb
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: astro_user
-      POSTGRES_PASSWORD: astro_password
+      POSTGRES_PASSWORD: astro_pass
       POSTGRES_DB: astrodb
     ports:
       - "5433:5432"

@@ -2,40 +2,70 @@ package conf
 
 import (
 	"os"
+	"sync"
 
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
 type (
+	Database struct {
+		Host string `yaml:"host"`
+		Name string `yaml:"name"`
+		Port string `yaml:"port"`
+		User string `yaml:"user"`
+		Pass string `yaml:"password"`
+	}
+	Datasource struct {
+		File string `yaml:"file"`
+	}
 	Config struct {
-		Database struct {
-			Host string `yaml:"host"`
-			Port string `yaml:"port"`
-			User string `yaml:"user"`
-			Pass string `yaml:"password"`
-		} `yaml:"database"`
+		Database   Database   `yaml:"database"`
+		Datasource Datasource `yaml:"datasource"`
 	}
 )
 
-// Initialize configuration from file
-func InitConfig(configFile string) (Config, error) {
+var (
+	configInstance *Config
+	once           sync.Once
+	initErr        error
+)
 
-	log.Infof("Initializing configuration from %v", configFile)
+// Initialize config as singleton
+func InitConfig(configFile string) error {
+
+	once.Do(func() {
+		configInstance, initErr = loadConfig(configFile)
+	})
+	return initErr
+}
+
+// Returns singleton instance of config
+func GetConfig() (*Config, error) {
+	if configInstance == nil {
+		return nil, initErr
+	}
+	return configInstance, nil
+}
+
+// Initialize configuration from file
+func loadConfig(configFile string) (*Config, error) {
+
+	log.Infof("Loading configuration from %v", configFile)
 
 	file, err := os.Open(configFile)
 	if err != nil {
 		log.Errorf("Error opening config file: %v", err)
-		return Config{}, err
+		return &Config{}, err
 	}
 	defer file.Close()
 
-	var config Config
+	var config *Config
 	decoder := yaml.NewDecoder(file)
 	err = decoder.Decode(&config)
 	if err != nil {
 		log.Errorf("Error parsing YAML config: %v", err)
-		return Config{}, err
+		return &Config{}, err
 	}
 
 	return config, nil

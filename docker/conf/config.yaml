@@ -1,5 +1,8 @@
 database:
-  host: localhost
+  host: postgres
+  name: astrodb
   port: 5432
   user: astro_user
-  password: astro_password
+  password: astro_pass
+datasource:
+  file: /app/data/PS_2025.03.06_14.58.10.csv
