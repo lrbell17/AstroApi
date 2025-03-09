@@ -44,5 +44,9 @@ func init() {
 	}
 	config, _ = conf.GetConfig()
 
-	db.InitDb()
+	// Initialize DB
+	err = db.InitDb()
+	if err != nil {
+		log.Fatalf("DB initialization failed: %v", err)
+	}
 }

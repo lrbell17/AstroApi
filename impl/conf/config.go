@@ -9,16 +9,6 @@ import (
 )
 
 type (
-	Database struct {
-		Host string `yaml:"host"`
-		Name string `yaml:"name"`
-		Port string `yaml:"port"`
-		User string `yaml:"user"`
-		Pass string `yaml:"password"`
-	}
-	Datasource struct {
-		File string `yaml:"file"`
-	}
 	Config struct {
 		Database   Database   `yaml:"database"`
 		Datasource Datasource `yaml:"datasource"`

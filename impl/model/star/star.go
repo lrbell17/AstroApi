@@ -1,5 +1,7 @@
 package stars
 
+const modelName = "star"
+
 type (
 	Star struct {
 		ID     uint `gorm:"primaryKey"`
@@ -9,3 +11,12 @@ type (
 		Temp   float32
 	}
 )
+
+func (*Star) GetModelName() string {
+	return modelName
+}
+
+func (*Star) ValidateColumns(header map[string]int) error {
+	// TODO
+	return nil
+}

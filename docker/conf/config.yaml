@@ -4,5 +4,14 @@ database:
   port: 5432
   user: astro_user
   password: astro_pass
+  performance:
+    batchsize: 100
 datasource:
-  file: /app/data/PS_2025.03.06_14.58.10.csv
+  file: /app/data/PSCompPars_2025.03.06_19.24.17.csv
+  exoplanet_data:
+    name: pl_name
+    host: hostname
+    mass: pl_bmasse
+    radius: pl_rade
+    dist: pl_orbsmax
+
