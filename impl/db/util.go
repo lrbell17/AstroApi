@@ -10,9 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const maxRetries = 5
-const retryInterval = 1
-
 // Get a connection to the DB
 func GetSession() (db *gorm.DB, err error) {
 
@@ -26,6 +23,9 @@ func GetSession() (db *gorm.DB, err error) {
 		conf.Database.Name,
 	)
 
+	maxRetries := conf.Database.Performance.MaxRetries
+	retryInterval := conf.Database.Performance.RetryInterval
+
 	// Try to connect with retries
 	for i := 0; i < maxRetries; i++ {
 		db, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
@@ -33,7 +33,7 @@ func GetSession() (db *gorm.DB, err error) {
 		if err == nil {
 			return
 		}
-		time.Sleep(retryInterval * time.Second)
+		time.Sleep(time.Duration(retryInterval) * time.Second)
 	}
 
 	log.Errorf("Failed to connect to database: %v", err)

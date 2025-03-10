@@ -5,7 +5,9 @@ database:
   user: astro_user
   password: astro_pass
   performance:
-    batchsize: 100
+    batch_size: 100
+    max_retries: 5
+    retry_interval: 1
 datasource:
   file: /app/data/PSCompPars_2025.03.06_19.24.17.csv
   exoplanet_data:

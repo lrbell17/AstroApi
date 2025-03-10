@@ -10,6 +10,8 @@ type (
 		Performance Performance `yaml:"performance"`
 	}
 	Performance struct {
-		Batchsize int `yaml:"batchsize"`
+		Batchsize     int `yaml:"batch_size"`
+		MaxRetries    int `yaml:"max_retries"`
+		RetryInterval int `yaml:"retry_interval"`
 	}
 )
