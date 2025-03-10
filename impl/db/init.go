@@ -46,6 +46,10 @@ func InitDb() (err error) {
 	if err != nil {
 		return
 	}
+	err = importFromCSV(&model.Star{})
+	if err != nil {
+		return
+	}
 
 	return
 }

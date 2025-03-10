@@ -21,10 +21,12 @@ type (
 	}
 )
 
+// Get exoplanet table name
 func (*Exoplanet) GetTableName() string {
 	return planetTableName
 }
 
+// Validate CSV columns for exoplanets
 func (*Exoplanet) ValidateColumns(header map[string]int) error {
 
 	conf, _ := conf.GetConfig()
@@ -44,6 +46,7 @@ func (*Exoplanet) ValidateColumns(header map[string]int) error {
 	return nil
 }
 
+// Parse exoplanet from CSV records
 func (*Exoplanet) ParseModel(record []string, colIndices map[string]int, config conf.Datasource) AstroModel {
 
 	explanetDataConf := config.ExoplanetData
@@ -56,6 +59,7 @@ func (*Exoplanet) ParseModel(record []string, colIndices map[string]int, config 
 	}
 }
 
+// Insert batch of exoplanets into DB
 func (e *Exoplanet) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 
 	batchSize := len(batch)

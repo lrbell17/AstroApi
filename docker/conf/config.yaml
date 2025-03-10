@@ -14,4 +14,8 @@ datasource:
     mass: pl_bmasse
     radius: pl_rade
     dist: pl_orbsmax
-
+  star_data:
+    name: hostname
+    mass: st_mass
+    radius: st_rad
+    temp: st_teff
