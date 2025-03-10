@@ -1,11 +1,10 @@
-package sqlutil
+package db
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/model"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +14,7 @@ const maxRetries = 5
 const retryInterval = 1
 
 // Get a connection to the DB
-func GetConnection() (db *gorm.DB, err error) {
+func GetSession() (db *gorm.DB, err error) {
 
 	conf, _ := conf.GetConfig()
 
@@ -39,10 +38,4 @@ func GetConnection() (db *gorm.DB, err error) {
 
 	log.Errorf("Failed to connect to database: %v", err)
 	return
-}
-
-// Insert records in batches
-func InsertBatch(db *gorm.DB, model []model.AstroModel) error {
-	result := db.CreateInBatches(model, len(model))
-	return result.Error
 }
