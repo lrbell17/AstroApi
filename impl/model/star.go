@@ -6,14 +6,15 @@ import (
 	"github.com/lrbell17/astroapi/impl/conf"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 const starTableName = "stars"
 
 type (
 	Star struct {
-		ID     uint `gorm:"primaryKey"`
-		Name   string
+		ID     uint   `gorm:"primaryKey"`
+		Name   string `gorm:"uniqueIndex"`
 		Mass   float32
 		Radius float32
 		Temp   float32
@@ -69,5 +70,7 @@ func (e *Star) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 			stars = append(stars, exo)
 		}
 	}
-	return db.Model(&Star{}).CreateInBatches(stars, batchSize).Error
+	return db.Model(&Star{}).
+		Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "name"}}, DoNothing: true}). // Ignore duplicates
+		CreateInBatches(stars, batchSize).Error
 }
