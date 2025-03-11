@@ -15,6 +15,8 @@ type (
 		ID     uint `gorm:"primaryKey"`
 		Name   string
 		Host   string
+		StarID uint `gorm:"index"`
+		Star   Star `gorm:"foreignKey:StarID"`
 		Mass   float32
 		Radius float32
 		Dist   float32
@@ -70,8 +72,27 @@ func (e *Exoplanet) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 	exoplanets := make([]*Exoplanet, 0, len(batch))
 	for _, record := range batch {
 		if exo, ok := record.(*Exoplanet); ok {
+
+			// Get the star ID
+			if err := exo.EnrichWithStarId(db); err != nil {
+				log.Warnf("Failed to get star for %v, skipping. Error: %v", exo, err)
+				continue
+			}
+
 			exoplanets = append(exoplanets, exo)
 		}
 	}
 	return db.Model(&Exoplanet{}).CreateInBatches(exoplanets, batchSize).Error
+}
+
+// Enrich exoplanet with the star ID by star name
+func (e *Exoplanet) EnrichWithStarId(db *gorm.DB) error {
+	var star Star
+	result := db.Where("name = ?", e.Host).First(&star)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	e.StarID = star.ID
+	return nil
 }

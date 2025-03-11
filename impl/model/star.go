@@ -13,11 +13,12 @@ const starTableName = "stars"
 
 type (
 	Star struct {
-		ID     uint   `gorm:"primaryKey"`
-		Name   string `gorm:"uniqueIndex"`
-		Mass   float32
-		Radius float32
-		Temp   float32
+		ID         uint   `gorm:"primaryKey"`
+		Name       string `gorm:"uniqueIndex"`
+		Mass       float32
+		Radius     float32
+		Temp       float32
+		Exoplanets []Exoplanet `gorm:"foreignKey:StarID"`
 	}
 )
 

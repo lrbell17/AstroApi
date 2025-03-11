@@ -42,11 +42,11 @@ func InitDb() (err error) {
 	}
 
 	// Import from CSV
-	err = importFromCSV(&model.Exoplanet{})
+	err = importFromCSV(&model.Star{})
 	if err != nil {
 		return
 	}
-	err = importFromCSV(&model.Star{})
+	err = importFromCSV(&model.Exoplanet{})
 	if err != nil {
 		return
 	}
