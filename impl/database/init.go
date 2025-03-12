@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"encoding/csv"
@@ -9,27 +9,9 @@ import (
 	"github.com/lrbell17/astroapi/impl/conf"
 	"github.com/lrbell17/astroapi/impl/model"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/gorm"
-)
-
-var (
-	db     *gorm.DB
-	config *conf.Config
 )
 
 func InitDb() (err error) {
-
-	// Get DB session
-	db, err = GetSession()
-	if err != nil {
-		return fmt.Errorf("unable to get DB connection: %v", err)
-	}
-
-	// Get config
-	config, err = conf.GetConfig()
-	if err != nil {
-		return err
-	}
 
 	// Create tables
 	err = createTable(&model.Exoplanet{})
@@ -60,7 +42,7 @@ func createTable(model model.AstroModel) (err error) {
 	tableName := model.GetTableName()
 	log.Infof("Creating table %v", tableName)
 
-	err = db.AutoMigrate(model)
+	err = DB.AutoMigrate(model)
 	if err != nil {
 		log.Errorf("Unable to create table %v: %v", tableName, err)
 	}
@@ -70,6 +52,8 @@ func createTable(model model.AstroModel) (err error) {
 }
 
 func importFromCSV(astroModel model.AstroModel) error {
+
+	config, _ := conf.GetConfig()
 	filePath := config.Datasource.File
 
 	// open CSV
@@ -120,7 +104,7 @@ func importFromCSV(astroModel model.AstroModel) error {
 
 		// Insert batch
 		if len(batch) >= batchSize {
-			if err := astroModel.CreateBatch(db, batch); err != nil {
+			if err := astroModel.CreateBatch(DB, batch); err != nil {
 				log.Warnf("Error inserting batch: %v", err)
 				errorCount += len(batch)
 			} else {
@@ -134,7 +118,7 @@ func importFromCSV(astroModel model.AstroModel) error {
 
 	// Insert remaining rows
 	if len(batch) > 0 {
-		if err := astroModel.CreateBatch(db, batch); err != nil {
+		if err := astroModel.CreateBatch(DB, batch); err != nil {
 			log.Warnf("Error inserting batch: %v", err)
 			errorCount += len(batch)
 		} else {

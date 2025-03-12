@@ -2,29 +2,26 @@ package main
 
 import (
 	"flag"
-	"time"
 
+	"github.com/lrbell17/astroapi/impl/api"
+	"github.com/lrbell17/astroapi/impl/api/handlers"
+	"github.com/lrbell17/astroapi/impl/api/repos"
+	"github.com/lrbell17/astroapi/impl/api/services"
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/db"
+	"github.com/lrbell17/astroapi/impl/database"
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	config *conf.Config
 )
 
 func main() {
 
-	log.Info("Starting Astro API")
+	log.Info("Starting Exoplanet API")
+	exoplanetRepo := repos.NewExoplanetRepo(database.DB)
+	exoplanetService := services.NewExoplanetService(exoplanetRepo)
+	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
 
-	log.Infof("Database host: %v", config.Database.Host)
-	log.Infof("Database port: %v", config.Database.Port)
-	log.Infof("Database user: %v", config.Database.User)
-	log.Infof("Database password: %v", config.Database.Pass)
-	log.Infof("Database name: %v", config.Database.Name)
+	r := api.SetupRouter(exoplanetHandler)
+	r.Run(":8080")
 
-	// keep container alive for debugging
-	time.Sleep(10 * time.Minute)
 }
 
 func init() {
@@ -38,14 +35,14 @@ func init() {
 	}
 
 	// Initialize config
-	err := conf.InitConfig("/app/conf/config.yaml")
+	err := conf.InitConfig(configFile)
 	if err != nil {
 		log.Fatal("Failed to build configuration, exiting.")
 	}
-	config, _ = conf.GetConfig()
 
 	// Initialize DB
-	err = db.InitDb()
+	database.Connect()
+	err = database.InitDb()
 	if err != nil {
 		log.Fatalf("DB initialization failed: %v", err)
 	}

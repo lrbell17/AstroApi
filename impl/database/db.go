@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"fmt"
@@ -10,8 +10,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 // Get a connection to the DB
-func GetSession() (db *gorm.DB, err error) {
+func Connect() {
 
 	conf, _ := conf.GetConfig()
 
@@ -27,8 +29,9 @@ func GetSession() (db *gorm.DB, err error) {
 	retryInterval := conf.Database.Performance.RetryInterval
 
 	// Try to connect with retries
+	var err error
 	for i := 0; i < maxRetries; i++ {
-		db, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
+		DB, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
 
 		if err == nil {
 			return
@@ -36,6 +39,5 @@ func GetSession() (db *gorm.DB, err error) {
 		time.Sleep(time.Duration(retryInterval) * time.Second)
 	}
 
-	log.Errorf("Failed to connect to database: %v", err)
-	return
+	log.Fatalf("Failed to connect to database: %v", err)
 }
