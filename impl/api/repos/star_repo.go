@@ -9,11 +9,12 @@ type StarRepo struct {
 	db *gorm.DB
 }
 
+// Constructor for star repo
 func NewStarRepo(db *gorm.DB) *StarRepo {
 	return &StarRepo{db}
 }
 
-// Get star by ID
+// Get star by ID from DB
 func (r *StarRepo) GetById(id uint) (*model.Star, error) {
 	var star model.Star
 	result := r.db.Preload("Exoplanets").First(&star, id)

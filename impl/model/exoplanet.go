@@ -33,11 +33,11 @@ func (*Exoplanet) ValidateColumns(header map[string]int) error {
 
 	conf, _ := conf.GetConfig()
 	requiredCols := []string{
-		conf.Datasource.ExoplanetData.NameCol,
-		conf.Datasource.ExoplanetData.HostCol,
-		conf.Datasource.ExoplanetData.MassCol,
-		conf.Datasource.ExoplanetData.RadiusCol,
-		conf.Datasource.ExoplanetData.DistCol,
+		conf.Datasource.ExoplanetData.Name.ColName,
+		conf.Datasource.ExoplanetData.Host.ColName,
+		conf.Datasource.ExoplanetData.Mass.ColName,
+		conf.Datasource.ExoplanetData.Radius.ColName,
+		conf.Datasource.ExoplanetData.Dist.ColName,
 	}
 	for _, col := range requiredCols {
 		if _, ok := header[col]; !ok {
@@ -53,11 +53,11 @@ func (*Exoplanet) ParseModel(record []string, colIndices map[string]int, config 
 
 	explanetDataConf := config.ExoplanetData
 	return &Exoplanet{
-		Name:   GetStringValue(record, colIndices, explanetDataConf.NameCol),
-		Host:   GetStringValue(record, colIndices, explanetDataConf.HostCol),
-		Dist:   GetFloatValue(record, colIndices, explanetDataConf.DistCol),
-		Radius: GetFloatValue(record, colIndices, explanetDataConf.RadiusCol),
-		Mass:   GetFloatValue(record, colIndices, explanetDataConf.MassCol),
+		Name:   GetStringValue(record, colIndices, explanetDataConf.Name.ColName),
+		Host:   GetStringValue(record, colIndices, explanetDataConf.Host.ColName),
+		Dist:   GetFloatValue(record, colIndices, explanetDataConf.Dist.ColName),
+		Radius: GetFloatValue(record, colIndices, explanetDataConf.Radius.ColName),
+		Mass:   GetFloatValue(record, colIndices, explanetDataConf.Mass.ColName),
 	}
 }
 

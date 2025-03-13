@@ -7,16 +7,20 @@ type (
 		StarData      StarData      `yaml:"star_data"`
 	}
 	ExoplanetData struct {
-		NameCol   string `yaml:"name"`
-		HostCol   string `yaml:"host"`
-		MassCol   string `yaml:"mass"`
-		RadiusCol string `yaml:"radius"`
-		DistCol   string `yaml:"dist"`
+		Name   Column `yaml:"name"`
+		Host   Column `yaml:"host"`
+		Mass   Column `yaml:"mass"`
+		Radius Column `yaml:"radius"`
+		Dist   Column `yaml:"dist"`
 	}
 	StarData struct {
-		NameCol   string `yaml:"name"`
-		MassCol   string `yaml:"mass"`
-		RadiusCol string `yaml:"radius"`
-		TempCol   string `yaml:"temp"`
+		Name   Column `yaml:"name"`
+		Mass   Column `yaml:"mass"`
+		Radius Column `yaml:"radius"`
+		Temp   Column `yaml:"temp"`
+	}
+	Column struct {
+		ColName string `yaml:"column"`
+		Unit    string `yaml:"unit,omitempty"` // Omitempty in case a unit is not provided
 	}
 )

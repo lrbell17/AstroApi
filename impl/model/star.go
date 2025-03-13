@@ -32,10 +32,10 @@ func (*Star) ValidateColumns(header map[string]int) error {
 
 	conf, _ := conf.GetConfig()
 	requiredCols := []string{
-		conf.Datasource.StarData.NameCol,
-		conf.Datasource.StarData.MassCol,
-		conf.Datasource.StarData.RadiusCol,
-		conf.Datasource.StarData.TempCol,
+		conf.Datasource.StarData.Name.ColName,
+		conf.Datasource.StarData.Mass.ColName,
+		conf.Datasource.StarData.Radius.ColName,
+		conf.Datasource.StarData.Temp.ColName,
 	}
 	for _, col := range requiredCols {
 		if _, ok := header[col]; !ok {
@@ -50,10 +50,10 @@ func (*Star) ValidateColumns(header map[string]int) error {
 func (*Star) ParseModel(record []string, colIndices map[string]int, config conf.Datasource) AstroModel {
 	starDataConf := config.StarData
 	return &Star{
-		Name:   GetStringValue(record, colIndices, starDataConf.NameCol),
-		Temp:   GetFloatValue(record, colIndices, starDataConf.TempCol),
-		Radius: GetFloatValue(record, colIndices, starDataConf.RadiusCol),
-		Mass:   GetFloatValue(record, colIndices, starDataConf.MassCol),
+		Name:   GetStringValue(record, colIndices, starDataConf.Name.ColName),
+		Temp:   GetFloatValue(record, colIndices, starDataConf.Temp.ColName),
+		Radius: GetFloatValue(record, colIndices, starDataConf.Radius.ColName),
+		Mass:   GetFloatValue(record, colIndices, starDataConf.Mass.ColName),
 	}
 }
 

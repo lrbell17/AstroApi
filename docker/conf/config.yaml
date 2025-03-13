@@ -11,13 +11,28 @@ database:
 datasource:
   file: /app/data/PSCompPars_2025.03.06_19.24.17.csv
   exoplanet_data:
-    name: pl_name
-    host: hostname
-    mass: pl_bmasse
-    radius: pl_rade
-    dist: pl_orbsmax
+    name: 
+      column: pl_name
+    host: 
+      column: hostname
+    mass:
+      column: pl_bmasse
+      unit: Earth mass
+    radius:  
+      column: pl_rade
+      unit: Earth radius
+    dist:  
+      column: pl_orbsmax
+      unit: AU
   star_data:
-    name: hostname
-    mass: st_mass
-    radius: st_rad
-    temp: st_teff
+    name:  
+      column: hostname
+    mass:  
+      column: st_mass
+      unit: Sun mass
+    radius:  
+      column: st_rad
+      unit: Sun radius
+    temp:  
+      column: st_teff
+      unit: K
