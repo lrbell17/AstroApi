@@ -2,14 +2,23 @@ package dto
 
 import "github.com/lrbell17/astroapi/impl/model"
 
-type ExoplanetDTO struct {
-	ID     uint    `json:"id"`
-	Name   string  `json:"name"`
-	Mass   float32 `json:"mass"`
-	Radius float32 `json:"radius"`
-	Dist   float32 `json:"distance"`
-	Star   StarDTO `json:"star"`
-}
+type (
+	ExoplanetDTO struct {
+		ID     uint          `json:"id"`
+		Name   string        `json:"name"`
+		Mass   float32       `json:"mass"`
+		Radius float32       `json:"radius"`
+		Dist   float32       `json:"distance"`
+		Star   PlanetStarDTO `json:"star"`
+	}
+	PlanetStarDTO struct {
+		ID     uint    `json:"id"`
+		Name   string  `json:"name"`
+		Mass   float32 `json:"mass"`
+		Radius float32 `json:"radius"`
+		Temp   float32 `json:"temperature"`
+	}
+)
 
 func NewExoplanetDTO(planet *model.Exoplanet) *ExoplanetDTO {
 	return &ExoplanetDTO{
@@ -18,7 +27,7 @@ func NewExoplanetDTO(planet *model.Exoplanet) *ExoplanetDTO {
 		Mass:   planet.Mass,
 		Radius: planet.Radius,
 		Dist:   planet.Dist,
-		Star: StarDTO{
+		Star: PlanetStarDTO{
 			ID:     planet.Star.ID,
 			Name:   planet.Star.Name,
 			Mass:   planet.Star.Mass,

@@ -1,0 +1,24 @@
+package repos
+
+import (
+	"github.com/lrbell17/astroapi/impl/model"
+	"gorm.io/gorm"
+)
+
+type StarRepo struct {
+	db *gorm.DB
+}
+
+func NewStarRepo(db *gorm.DB) *StarRepo {
+	return &StarRepo{db}
+}
+
+// Get star by ID
+func (r *StarRepo) GetById(id uint) (*model.Star, error) {
+	var star model.Star
+	result := r.db.Preload("Exoplanets").First(&star, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &star, nil
+}

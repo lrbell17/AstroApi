@@ -13,7 +13,7 @@ func NewExoplanetService(repo *repos.ExoplanetRepo) *ExoplanetService {
 	return &ExoplanetService{repo}
 }
 
-func (s *ExoplanetService) GetByID(id uint) (*dto.ExoplanetDTO, error) {
+func (s *ExoplanetService) GetById(id uint) (*dto.ExoplanetDTO, error) {
 	planet, err := s.repo.GetById(id)
 	if err != nil {
 		return nil, err
