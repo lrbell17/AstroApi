@@ -12,6 +12,7 @@ type (
 	Config struct {
 		Database   Database   `yaml:"database"`
 		Datasource Datasource `yaml:"datasource"`
+		Cache      Cache      `yaml:"cache"`
 	}
 )
 

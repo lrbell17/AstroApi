@@ -7,6 +7,7 @@ import (
 	"github.com/lrbell17/astroapi/impl/api/handlers"
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/api/services"
+	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
 	"github.com/lrbell17/astroapi/impl/database"
 	log "github.com/sirupsen/logrus"
@@ -14,32 +15,13 @@ import (
 
 func main() {
 
-	log.Info("Starting Astro API")
-
-	exoplanetRepo := repos.NewExoplanetRepo(database.DB)
-	exoplanetService := services.NewExoplanetService(exoplanetRepo)
-	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
-
-	starRepo := repos.NewStarRepo(database.DB)
-	starService := services.NewStarService(starRepo)
-	starHandler := handlers.NewStarHandler(*starService)
-
-	r := api.SetupRouter(exoplanetHandler, starHandler)
-	r.Run(":8080")
-
-}
-
-func init() {
-
-	// Get config file path from flags
+	// Get config file path from flags and initialize config
 	var configFile string
 	flag.StringVar(&configFile, "c", configFile, "config file path")
 	flag.Parse()
 	if configFile == "" {
 		log.Fatalf("Config file path flag '-c' is required")
 	}
-
-	// Initialize config
 	err := conf.InitConfig(configFile)
 	if err != nil {
 		log.Fatal("Failed to build configuration, exiting.")
@@ -51,4 +33,21 @@ func init() {
 	if err != nil {
 		log.Fatalf("DB initialization failed: %v", err)
 	}
+
+	// Initialize Redis cache
+	cache.Connect()
+
+	// Start API
+	log.Info("Starting Astro API")
+	exoplanetRepo := repos.NewExoplanetRepo(database.DB)
+	exoplanetService := services.NewExoplanetService(exoplanetRepo)
+	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
+
+	starRepo := repos.NewStarRepo(database.DB)
+	starService := services.NewStarService(starRepo)
+	starHandler := handlers.NewStarHandler(*starService)
+
+	r := api.SetupRouter(exoplanetHandler, starHandler)
+	r.Run(":8080")
+
 }

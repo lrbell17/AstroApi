@@ -8,6 +8,14 @@ database:
     batch_size: 100
     max_retries: 5
     retry_interval: 1
+cache: 
+  host: redis
+  port: 6379
+  password: cache_pass
+  performance:
+    expiry: 60
+    max_retries: 5
+    retry_interval: 1
 datasource:
   file: /app/data/PSCompPars_2025.03.06_19.24.17.csv
   exoplanet_data:
