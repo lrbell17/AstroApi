@@ -1,8 +1,14 @@
 package dto
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
 	"github.com/lrbell17/astroapi/impl/model"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
@@ -23,6 +29,7 @@ type (
 	}
 )
 
+// Constructor for Exoplanet DTO
 func NewExoplanetDTO(planet *model.Exoplanet, datasourceConf *conf.Datasource) *ExoplanetDTO {
 
 	if planet == nil || datasourceConf == nil {
@@ -43,4 +50,29 @@ func NewExoplanetDTO(planet *model.Exoplanet, datasourceConf *conf.Datasource) *
 			Temp:   asMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
 		},
 	}
+}
+
+// Get Exoplanet DTO from cache by key
+func (e *ExoplanetDTO) GetCached(cacheKey string) error {
+	if e == nil {
+		err := fmt.Errorf("exoplanet DTO is nil")
+		log.Error(err)
+		return err
+	}
+
+	ctx := context.Background()
+
+	cached, err := cache.RedisClient.Get(ctx, cacheKey).Result()
+	if err == nil {
+		var planetDTO ExoplanetDTO
+		if err := json.Unmarshal([]byte(cached), &planetDTO); err == nil {
+			log.Infof("Cache hit on %v", cacheKey)
+			*e = planetDTO
+			return nil
+		} else {
+			log.Warnf("Unable to unmarshal result for key %v: %v", cacheKey, err)
+		}
+	}
+	log.Infof("Cache miss on %v", cacheKey)
+	return fmt.Errorf("cache miss")
 }

@@ -10,7 +10,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var RedisClient *redis.Client
+var (
+	RedisClient *redis.Client
+	Expiry      time.Duration
+)
 
 func Connect() {
 	config, _ := conf.GetConfig()
@@ -23,6 +26,7 @@ func Connect() {
 		Password: config.Cache.Password,
 		DB:       0,
 	})
+	Expiry = time.Duration(config.Cache.Performance.Expiry) * time.Second
 
 	ctx := context.Background()
 

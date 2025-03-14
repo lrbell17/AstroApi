@@ -1,8 +1,11 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/api/repos"
+	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
 	log "github.com/sirupsen/logrus"
 )
@@ -24,10 +27,24 @@ func NewExoplanetService(repo *repos.ExoplanetRepo) *ExoplanetService {
 
 // Call on repo to get the exoplanet by ID and return an ExoplanetDTO
 func (s *ExoplanetService) GetById(id uint) (*dto.ExoplanetDTO, error) {
+
+	planetDTO := &dto.ExoplanetDTO{}
+
+	// check cache
+	cacheKey := fmt.Sprintf("exoplanet:%d", id)
+	if err := planetDTO.GetCached(cacheKey); err == nil {
+		return planetDTO, nil
+	}
+
+	// Get from DB
 	planet, err := s.repo.GetById(id)
 	if err != nil {
 		return nil, err
 	}
+	planetDTO = dto.NewExoplanetDTO(planet, &s.config.Datasource)
 
-	return dto.NewExoplanetDTO(planet, &s.config.Datasource), nil
+	// Store in cache
+	cache.PutCache(planetDTO, cacheKey)
+
+	return planetDTO, nil
 }
