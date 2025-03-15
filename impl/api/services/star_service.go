@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/api/repos"
+	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
 	log "github.com/sirupsen/logrus"
 )
@@ -23,10 +24,24 @@ func NewStarService(repo *repos.StarRepo) *StarService {
 
 // Call on repo to get the star by ID and return an StarDTO
 func (s *StarService) GetById(id uint) (*dto.StarDTO, error) {
+
+	starDTO := &dto.StarDTO{}
+
+	// Check cache
+	cacheKey := starDTO.GetCacheKey(id)
+	if err := starDTO.GetCached(cacheKey); err == nil {
+		return starDTO, nil
+	}
+
+	// Get from DB
 	star, err := s.repo.GetById(id)
 	if err != nil {
 		return nil, err
 	}
+	starDTO = dto.NewStarDTO(star, &s.config.Datasource)
 
-	return dto.NewStarDTO(star, &s.config.Datasource), nil
+	// Add to cache
+	cache.PutCache(starDTO, cacheKey)
+
+	return starDTO, nil
 }

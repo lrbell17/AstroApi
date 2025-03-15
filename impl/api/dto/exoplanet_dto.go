@@ -12,6 +12,7 @@ import (
 )
 
 type (
+	// DTO for exoplanet data
 	ExoplanetDTO struct {
 		ID     uint          `json:"id"`
 		Name   string        `json:"name"`
@@ -20,6 +21,7 @@ type (
 		Dist   MeasuredValue `json:"distance"`
 		Star   PlanetStarDTO `json:"star"`
 	}
+	// DTO for star data nested within exoplanet data
 	PlanetStarDTO struct {
 		ID     uint          `json:"id"`
 		Name   string        `json:"name"`
@@ -52,11 +54,16 @@ func NewExoplanetDTO(planet *model.Exoplanet, datasourceConf *conf.Datasource) *
 	}
 }
 
+// Get cache key for Exoplanet DTO by ID
+func (e *ExoplanetDTO) GetCacheKey(id uint) string {
+	return fmt.Sprintf("exoplanet:%d", id)
+}
+
 // Get Exoplanet DTO from cache by key
 func (e *ExoplanetDTO) GetCached(cacheKey string) error {
 	if e == nil {
 		err := fmt.Errorf("exoplanet DTO is nil")
-		log.Error(err)
+		log.Errorf("Could not get cached value for %v: %v", cacheKey, err)
 		return err
 	}
 

@@ -1,8 +1,6 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/cache"
@@ -30,8 +28,8 @@ func (s *ExoplanetService) GetById(id uint) (*dto.ExoplanetDTO, error) {
 
 	planetDTO := &dto.ExoplanetDTO{}
 
-	// check cache
-	cacheKey := fmt.Sprintf("exoplanet:%d", id)
+	// Check cache
+	cacheKey := planetDTO.GetCacheKey(id)
 	if err := planetDTO.GetCached(cacheKey); err == nil {
 		return planetDTO, nil
 	}
