@@ -1,10 +1,11 @@
-package dto
+package response
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 
+	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
 	"github.com/lrbell17/astroapi/impl/model"
@@ -14,20 +15,20 @@ import (
 type (
 	// DTO for exoplanet data
 	ExoplanetDTO struct {
-		ID     uint          `json:"id"`
-		Name   string        `json:"name"`
-		Mass   MeasuredValue `json:"mass"`
-		Radius MeasuredValue `json:"radius"`
-		Dist   MeasuredValue `json:"distance"`
-		Star   PlanetStarDTO `json:"star"`
+		ID     uint              `json:"id"`
+		Name   string            `json:"name"`
+		Mass   dto.MeasuredValue `json:"mass"`
+		Radius dto.MeasuredValue `json:"radius"`
+		Dist   dto.MeasuredValue `json:"distance"`
+		Star   PlanetStarDTO     `json:"star"`
 	}
 	// DTO for star data nested within exoplanet data
 	PlanetStarDTO struct {
-		ID     uint          `json:"id"`
-		Name   string        `json:"name"`
-		Mass   MeasuredValue `json:"mass"`
-		Radius MeasuredValue `json:"radius"`
-		Temp   MeasuredValue `json:"temperature"`
+		ID     uint              `json:"id"`
+		Name   string            `json:"name"`
+		Mass   dto.MeasuredValue `json:"mass"`
+		Radius dto.MeasuredValue `json:"radius"`
+		Temp   dto.MeasuredValue `json:"temp"`
 	}
 )
 
@@ -41,15 +42,15 @@ func NewExoplanetDTO(planet *model.Exoplanet, datasourceConf *conf.Datasource) *
 	return &ExoplanetDTO{
 		ID:     planet.ID,
 		Name:   planet.Name,
-		Mass:   asMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit),
-		Radius: asMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit),
-		Dist:   asMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit),
+		Mass:   dto.AsMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit),
+		Radius: dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit),
+		Dist:   dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit),
 		Star: PlanetStarDTO{
 			ID:     planet.Star.ID,
 			Name:   planet.Star.Name,
-			Mass:   asMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
-			Radius: asMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
-			Temp:   asMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
+			Mass:   dto.AsMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
+			Radius: dto.AsMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
+			Temp:   dto.AsMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
 		},
 	}
 }

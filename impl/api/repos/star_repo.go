@@ -33,7 +33,7 @@ func (r *StarRepo) GetById(id uint) (*model.Star, error) {
 }
 
 // Add star to DB
-func (r *StarRepo) Insert(s *model.Star) error {
+func (r *StarRepo) Insert(s *model.Star) (*model.Star, error) {
 
 	if err := r.db.Create(s).Error; err != nil {
 
@@ -41,12 +41,12 @@ func (r *StarRepo) Insert(s *model.Star) error {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 			log.Warnf("%s: %v", ErrStarExists, err)
-			return errors.New(ErrStarExists)
+			return nil, errors.New(ErrStarExists)
 		}
 
 		log.Errorf("Error adding star: %v", err)
-		return err
+		return nil, err
 	}
 
-	return nil
+	return s, nil
 }

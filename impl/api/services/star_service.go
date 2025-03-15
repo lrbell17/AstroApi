@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/lrbell17/astroapi/impl/api/dto"
+	"github.com/lrbell17/astroapi/impl/api/dto/request"
+	"github.com/lrbell17/astroapi/impl/api/dto/response"
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/model"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,9 +24,9 @@ func NewStarService(repo *repos.StarRepo) *StarService {
 }
 
 // Call on repo to get the star by ID and return an StarDTO
-func (s *StarService) GetById(id uint) (*dto.StarDTO, error) {
+func (s *StarService) GetById(id uint) (*response.StarResponseDTO, error) {
 
-	starDTO := &dto.StarDTO{}
+	starDTO := &response.StarResponseDTO{}
 
 	// Check cache
 	cacheKey := starDTO.GetCacheKey(id)
@@ -39,7 +39,7 @@ func (s *StarService) GetById(id uint) (*dto.StarDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	starDTO = dto.NewStarDTO(star, &s.config.Datasource)
+	starDTO = response.ResponseFromStar(star, &s.config.Datasource)
 
 	// Add to cache
 	cache.PutCache(starDTO, cacheKey)
@@ -47,17 +47,20 @@ func (s *StarService) GetById(id uint) (*dto.StarDTO, error) {
 	return starDTO, nil
 }
 
-// Call repo too add star to DB
-func (s *StarService) AddStar(star *model.Star) error {
+// Call repo to add star to DB
+func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarResponseDTO, error) {
+
+	star := starReq.StarFromRequest()
 
 	// Insert to DB
-	if err := s.repo.Insert(star); err != nil {
-		return err
+	star, err := s.repo.Insert(star)
+	if err != nil {
+		return nil, err
 	}
 	// Add to cache
-	starDTO := dto.NewStarDTO(star, &s.config.Datasource)
-	cache.PutCache(starDTO, starDTO.GetCacheKey(starDTO.ID))
+	starResp := response.ResponseFromStar(star, &s.config.Datasource)
+	cache.PutCache(starResp, starResp.GetCacheKey(starResp.ID))
 
-	return nil
+	return starResp, nil
 
 }

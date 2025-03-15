@@ -5,6 +5,6 @@ type MeasuredValue struct {
 	Unit  string  `json:"unit"`
 }
 
-func asMeasuredValue(value float32, unit string) MeasuredValue {
+func AsMeasuredValue(value float32, unit string) MeasuredValue {
 	return MeasuredValue{value, unit}
 }

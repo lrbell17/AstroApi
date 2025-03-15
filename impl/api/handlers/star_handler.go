@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lrbell17/astroapi/impl/api/dto/request"
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/api/services"
-	"github.com/lrbell17/astroapi/impl/model"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -46,22 +46,22 @@ func (h *StarHandler) GetById(c *gin.Context) {
 
 // Handler function to add star
 func (h *StarHandler) PostStar(c *gin.Context) {
-	star := new(model.Star)
-	if err := c.BindJSON(star); err != nil {
-		log.Errorf("Error parsing star from JSON: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Error parsing star from JSON"})
+
+	var req request.StarRequestDTO
+	if err := req.ApplyJsonValues(c.Request.Body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := h.service.AddStar(star); err != nil {
+	starResp, err := h.service.AddStar(&req)
+	if err != nil {
 
 		if err.Error() == repos.ErrStarExists {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
-	c.JSON(http.StatusCreated, star)
+	c.JSON(http.StatusCreated, starResp)
 }
