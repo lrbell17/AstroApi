@@ -5,6 +5,7 @@ import (
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
+	"github.com/lrbell17/astroapi/impl/model"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -44,4 +45,19 @@ func (s *StarService) GetById(id uint) (*dto.StarDTO, error) {
 	cache.PutCache(starDTO, cacheKey)
 
 	return starDTO, nil
+}
+
+// Call repo too add star to DB
+func (s *StarService) AddStar(star *model.Star) error {
+
+	// Insert to DB
+	if err := s.repo.Insert(star); err != nil {
+		return err
+	}
+	// Add to cache
+	starDTO := dto.NewStarDTO(star, &s.config.Datasource)
+	cache.PutCache(starDTO, starDTO.GetCacheKey(starDTO.ID))
+
+	return nil
+
 }
