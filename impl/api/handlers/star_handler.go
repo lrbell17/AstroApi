@@ -48,7 +48,7 @@ func (h *StarHandler) GetById(c *gin.Context) {
 func (h *StarHandler) PostStar(c *gin.Context) {
 
 	var req request.StarRequestDTO
-	if err := req.ApplyJsonValues(c.Request.Body); err != nil {
+	if err := request.ApplyJsonValues(&req, c.Request.Body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

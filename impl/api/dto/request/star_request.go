@@ -1,13 +1,14 @@
 package request
 
 import (
-	"encoding/json"
-	"io"
-
 	"github.com/lrbell17/astroapi/impl/model"
 )
 
 type (
+	// Star request interface
+	StarRequest interface {
+		Request[model.Star]
+	}
 	// DTO for star request
 	StarRequestDTO struct {
 		Name   string  `json:"name" binding:"required"`
@@ -17,16 +18,8 @@ type (
 	}
 )
 
-// Get Request DTO from json
-func (req *StarRequestDTO) ApplyJsonValues(body io.ReadCloser) error {
-	decoder := json.NewDecoder(body)
-	decoder.DisallowUnknownFields()
-
-	return decoder.Decode(&req)
-}
-
-// Get Star from StarRequestDTO
-func (req *StarRequestDTO) StarFromRequest() *model.Star {
+// Get Star model from Star request DTO
+func (req *StarRequestDTO) ModelFromRequest() *model.Star {
 	if req == nil {
 		return nil
 	}

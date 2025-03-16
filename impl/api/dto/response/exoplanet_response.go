@@ -13,8 +13,12 @@ import (
 )
 
 type (
-	// DTO for exoplanet data
-	ExoplanetDTO struct {
+	// Exoplanet response interface
+	ExoplanetResponse interface {
+		Response[model.Exoplanet]
+	}
+	// DTO for exoplanet response
+	ExoplanetResponseDTO struct {
 		ID     uint              `json:"id"`
 		Name   string            `json:"name"`
 		Mass   dto.MeasuredValue `json:"mass"`
@@ -22,7 +26,7 @@ type (
 		Dist   dto.MeasuredValue `json:"distance"`
 		Star   PlanetStarDTO     `json:"star"`
 	}
-	// DTO for star data nested within exoplanet data
+	// DTO for star data nested within exoplanet response
 	PlanetStarDTO struct {
 		ID     uint              `json:"id"`
 		Name   string            `json:"name"`
@@ -32,36 +36,34 @@ type (
 	}
 )
 
-// Constructor for Exoplanet DTO
-func NewExoplanetDTO(planet *model.Exoplanet, datasourceConf *conf.Datasource) *ExoplanetDTO {
+// Get exoplanet response DTO from exoplanet model
+func (resp *ExoplanetResponseDTO) ResponseFromModel(planet *model.Exoplanet, datasourceConf *conf.Datasource) {
 
-	if planet == nil || datasourceConf == nil {
-		return nil
+	if resp == nil || planet == nil || datasourceConf == nil {
+		return
 	}
 
-	return &ExoplanetDTO{
-		ID:     planet.ID,
-		Name:   planet.Name,
-		Mass:   dto.AsMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit),
-		Radius: dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit),
-		Dist:   dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit),
-		Star: PlanetStarDTO{
-			ID:     planet.Star.ID,
-			Name:   planet.Star.Name,
-			Mass:   dto.AsMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
-			Radius: dto.AsMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
-			Temp:   dto.AsMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
-		},
+	resp.ID = planet.ID
+	resp.Name = planet.Name
+	resp.Mass = dto.AsMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit)
+	resp.Radius = dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit)
+	resp.Dist = dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit)
+	resp.Star = PlanetStarDTO{
+		ID:     planet.Star.ID,
+		Name:   planet.Star.Name,
+		Mass:   dto.AsMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
+		Radius: dto.AsMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
+		Temp:   dto.AsMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
 	}
 }
 
 // Get cache key for Exoplanet DTO by ID
-func (e *ExoplanetDTO) GetCacheKey(id uint) string {
+func (e *ExoplanetResponseDTO) GetCacheKey(id uint) string {
 	return fmt.Sprintf("exoplanet:%d", id)
 }
 
 // Get Exoplanet DTO from cache by key
-func (e *ExoplanetDTO) GetCached(cacheKey string) error {
+func (e *ExoplanetResponseDTO) GetCached(cacheKey string) error {
 	if e == nil {
 		err := fmt.Errorf("exoplanet DTO is nil")
 		log.Errorf("Could not get cached value for %v: %v", cacheKey, err)
@@ -72,7 +74,7 @@ func (e *ExoplanetDTO) GetCached(cacheKey string) error {
 
 	cached, err := cache.RedisClient.Get(ctx, cacheKey).Result()
 	if err == nil {
-		var planetDTO ExoplanetDTO
+		var planetDTO ExoplanetResponseDTO
 		if err := json.Unmarshal([]byte(cached), &planetDTO); err == nil {
 			log.Infof("Cache hit on %v", cacheKey)
 			*e = planetDTO

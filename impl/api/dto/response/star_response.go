@@ -13,6 +13,10 @@ import (
 )
 
 type (
+	// Star response interface
+	StarResponse interface {
+		Response[model.Star]
+	}
 	// DTO for star response
 	StarResponseDTO struct {
 		ID      uint              `json:"id"`
@@ -32,11 +36,11 @@ type (
 	}
 )
 
-// Constructor for Star DTO
-func ResponseFromStar(star *model.Star, datasourceConf *conf.Datasource) *StarResponseDTO {
+// Get star response DTO from star model
+func (resp *StarResponseDTO) ResponseFromModel(star *model.Star, datasourceConf *conf.Datasource) {
 
-	if star == nil || datasourceConf == nil {
-		return nil
+	if resp == nil || star == nil || datasourceConf == nil {
+		return
 	}
 
 	planets := make([]StarPlanetDTO, len(star.Exoplanets))
@@ -50,14 +54,12 @@ func ResponseFromStar(star *model.Star, datasourceConf *conf.Datasource) *StarRe
 		}
 	}
 
-	return &StarResponseDTO{
-		ID:      star.ID,
-		Name:    star.Name,
-		Mass:    dto.AsMeasuredValue(star.Mass, datasourceConf.StarData.Mass.Unit),
-		Radius:  dto.AsMeasuredValue(star.Radius, datasourceConf.StarData.Radius.Unit),
-		Temp:    dto.AsMeasuredValue(star.Temp, datasourceConf.StarData.Temp.Unit),
-		Planets: planets,
-	}
+	resp.ID = star.ID
+	resp.Name = star.Name
+	resp.Mass = dto.AsMeasuredValue(star.Mass, datasourceConf.StarData.Mass.Unit)
+	resp.Radius = dto.AsMeasuredValue(star.Radius, datasourceConf.StarData.Radius.Unit)
+	resp.Temp = dto.AsMeasuredValue(star.Temp, datasourceConf.StarData.Temp.Unit)
+	resp.Planets = planets
 
 }
 

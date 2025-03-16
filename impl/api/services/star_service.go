@@ -26,12 +26,12 @@ func NewStarService(repo *repos.StarRepo) *StarService {
 // Call on repo to get the star by ID and return an StarDTO
 func (s *StarService) GetById(id uint) (*response.StarResponseDTO, error) {
 
-	starDTO := &response.StarResponseDTO{}
+	starResp := &response.StarResponseDTO{}
 
 	// Check cache
-	cacheKey := starDTO.GetCacheKey(id)
-	if err := starDTO.GetCached(cacheKey); err == nil {
-		return starDTO, nil
+	cacheKey := starResp.GetCacheKey(id)
+	if err := starResp.GetCached(cacheKey); err == nil {
+		return starResp, nil
 	}
 
 	// Get from DB
@@ -39,18 +39,18 @@ func (s *StarService) GetById(id uint) (*response.StarResponseDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	starDTO = response.ResponseFromStar(star, &s.config.Datasource)
+	starResp.ResponseFromModel(star, &s.config.Datasource)
 
 	// Add to cache
-	cache.PutCache(starDTO, cacheKey)
+	cache.PutCache(starResp, cacheKey)
 
-	return starDTO, nil
+	return starResp, nil
 }
 
 // Call repo to add star to DB
 func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarResponseDTO, error) {
 
-	star := starReq.StarFromRequest()
+	star := starReq.ModelFromRequest()
 
 	// Insert to DB
 	star, err := s.repo.Insert(star)
@@ -58,7 +58,9 @@ func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarRe
 		return nil, err
 	}
 	// Add to cache
-	starResp := response.ResponseFromStar(star, &s.config.Datasource)
+	starResp := &response.StarResponseDTO{}
+	starResp.ResponseFromModel(star, &s.config.Datasource)
+
 	cache.PutCache(starResp, starResp.GetCacheKey(starResp.ID))
 
 	return starResp, nil

@@ -24,9 +24,9 @@ func NewExoplanetService(repo *repos.ExoplanetRepo) *ExoplanetService {
 }
 
 // Call on repo to get the exoplanet by ID and return an ExoplanetDTO
-func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetDTO, error) {
+func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetResponseDTO, error) {
 
-	planetDTO := &response.ExoplanetDTO{}
+	planetDTO := &response.ExoplanetResponseDTO{}
 
 	// Check cache
 	cacheKey := planetDTO.GetCacheKey(id)
@@ -39,7 +39,7 @@ func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	planetDTO = response.NewExoplanetDTO(planet, &s.config.Datasource)
+	planetDTO.ResponseFromModel(planet, &s.config.Datasource)
 
 	// Store in cache
 	cache.PutCache(planetDTO, cacheKey)
