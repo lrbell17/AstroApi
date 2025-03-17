@@ -2,6 +2,7 @@ package repos
 
 import (
 	"github.com/lrbell17/astroapi/impl/model"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -22,4 +23,15 @@ func (r *ExoplanetRepo) GetById(id uint) (*model.Exoplanet, error) {
 		return nil, result.Error
 	}
 	return &planet, nil
+}
+
+// Add planet to repo
+func (r *ExoplanetRepo) Insert(e *model.Exoplanet) (*model.Exoplanet, error) {
+
+	if err := r.db.Create(e).Error; err != nil {
+		log.Errorf("Error adding planet: %v", err)
+		return nil, err
+	}
+
+	return e, nil
 }

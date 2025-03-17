@@ -39,13 +39,14 @@ func main() {
 
 	// Start API
 	log.Info("Starting Astro API")
-	exoplanetRepo := repos.NewExoplanetRepo(database.DB)
-	exoplanetService := services.NewExoplanetService(exoplanetRepo)
-	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
 
 	starRepo := repos.NewStarRepo(database.DB)
 	starService := services.NewStarService(starRepo)
 	starHandler := handlers.NewStarHandler(*starService)
+
+	exoplanetRepo := repos.NewExoplanetRepo(database.DB)
+	exoplanetService := services.NewExoplanetService(exoplanetRepo, starRepo)
+	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
 
 	r := api.SetupRouter(exoplanetHandler, starHandler)
 	r.Run(":8080")

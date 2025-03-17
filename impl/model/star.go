@@ -75,3 +75,12 @@ func (e *Star) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 		Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "name"}}, DoNothing: true}). // Ignore duplicates
 		CreateInBatches(stars, batchSize).Error
 }
+
+// Add an exoplanet to s star
+func (s *Star) AddExoplanet(e *Exoplanet) {
+	if s == nil {
+		return
+	}
+
+	s.Exoplanets = append(s.Exoplanets, *e)
+}

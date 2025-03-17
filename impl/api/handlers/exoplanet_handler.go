@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lrbell17/astroapi/impl/api/dto/request"
 	"github.com/lrbell17/astroapi/impl/api/services"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -24,7 +25,7 @@ func NewExoplanetHandler(service *services.ExoplanetService) *ExoplanetHandler {
 func (h *ExoplanetHandler) GetById(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrInvalidId})
 		return
 	}
 
@@ -35,9 +36,30 @@ func (h *ExoplanetHandler) GetById(c *gin.Context) {
 		return
 	} else if err != nil {
 		log.Errorf("Unable too get star: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": services.ErrInternal})
 		return
 	}
 
 	c.JSON(http.StatusOK, planet)
+}
+
+func (h *ExoplanetHandler) Post(c *gin.Context) {
+
+	var req request.ExoplanetRequestDTO
+	if err := request.ApplyJsonValues(&req, c.Request.Body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	planetResp, err := h.service.AddPlanet(&req)
+	if err != nil {
+		if services.IsDuplicateKeyErr(err) {
+			c.JSON(http.StatusConflict, gin.H{"error": services.ErrPlanetExists})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": services.ErrInternal})
+		return
+	}
+	c.JSON(http.StatusCreated, planetResp)
+
 }

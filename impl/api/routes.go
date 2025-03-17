@@ -11,9 +11,10 @@ func SetupRouter(exoplanetHandler *handlers.ExoplanetHandler, starHandler *handl
 	api := r.Group("/api")
 	{
 		api.GET("/exoplanets/:id", exoplanetHandler.GetById)
+		api.POST("/exoplanets", exoplanetHandler.Post)
 
 		api.GET("/stars/:id", starHandler.GetById)
-		api.POST("/stars", starHandler.PostStar)
+		api.POST("/stars", starHandler.Post)
 	}
 	return r
 }
