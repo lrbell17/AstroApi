@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/lrbell17/astroapi/impl/api"
+	"github.com/lrbell17/astroapi/impl/api/auth"
 	"github.com/lrbell17/astroapi/impl/api/handlers"
 	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/api/services"
@@ -22,20 +23,24 @@ func main() {
 	if configFile == "" {
 		log.Fatalf("Config file path flag '-c' is required")
 	}
-	err := conf.InitConfig(configFile)
-	if err != nil {
+
+	if err := conf.InitConfig(configFile); err != nil {
 		log.Fatal("Failed to build configuration, exiting.")
 	}
 
 	// Initialize DB
 	database.Connect()
-	err = database.InitDb()
-	if err != nil {
+	if err := database.InitDb(); err != nil {
 		log.Fatalf("DB initialization failed: %v", err)
 	}
 
 	// Initialize Redis cache
 	cache.Connect()
+
+	// Load JWK
+	if err := auth.LoadJwk(); err != nil {
+		log.Fatal(err)
+	}
 
 	// Start API
 	log.Info("Starting Astro API")

@@ -8,6 +8,8 @@ database:
     batch_size: 100
     max_retries: 5
     retry_interval: 1
+api:
+  jwk_path: /app/conf/jwk.json
 cache: 
   host: redis
   port: 6379

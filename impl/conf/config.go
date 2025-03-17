@@ -13,6 +13,7 @@ type (
 		Database   Database   `yaml:"database"`
 		Datasource Datasource `yaml:"datasource"`
 		Cache      Cache      `yaml:"cache"`
+		Api        Api        `yaml:"api"`
 	}
 )
 

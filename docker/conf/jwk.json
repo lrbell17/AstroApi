@@ -1,0 +1,8 @@
+{
+    "kty": "RSA",
+    "n": "iTu39WCuEddo-PajnuYcUtcR4LtXjRx2zM2qtx04SRREWAa2o_q4qeu6hQ9YnnXDtC9-PI-BQl5UD66eDTu_6POX5wy-Ca42sRcRnItFtH4MVC2pCKVrXoHty9rqiECXSxOQinDwkJg6jGakpKU1a0ozCz-85wbqD_-jW5TYhbGLmcLcFkP1-ZIAf1uvo4wUeRMjvmWSNRGNHdK5OLjn5xnuKT0zwz7w1WZeLWY5An36a5KoSKNvt8vyu8dQEGtPAzWx9ffOFRvE5F8z4wGjCp3Gmwjok_bh-xdxrVhCqMsXQTOgcNXSZxTVh9MsDuA7x3pxx45-jnlLyqf595N9lQ",
+    "e": "AQAB",
+    "alg": "RS256",
+    "kid": "astroapi",
+    "use": "sig"
+}
