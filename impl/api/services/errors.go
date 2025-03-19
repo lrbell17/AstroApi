@@ -11,6 +11,8 @@ const (
 	ErrPlanetExists = "planet already exists"
 	ErrInvalidId    = "invalid ID"
 	ErrInternal     = "internal error"
+	ErrNoJwt        = "missing auth token"
+	ErrInvalidJwt   = "invalid auth token"
 )
 
 // Checks if an error is a duplicate key error
