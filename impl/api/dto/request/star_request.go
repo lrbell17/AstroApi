@@ -12,9 +12,9 @@ type (
 	// DTO for star request
 	StarRequestDTO struct {
 		Name   string  `json:"name" binding:"required"`
-		Mass   float32 `json:"mass"`
-		Radius float32 `json:"radius"`
-		Temp   float32 `json:"temp"`
+		Mass   float32 `json:"mass" binding:"gt=0"`
+		Radius float32 `json:"radius" binding:"gt=0"`
+		Temp   float32 `json:"temp" binding:"gt=0"`
 	}
 )
 

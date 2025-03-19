@@ -3,6 +3,8 @@ package request
 import (
 	"encoding/json"
 	"io"
+
+	"github.com/gin-gonic/gin/binding"
 )
 
 // Generic request interface
@@ -15,5 +17,12 @@ func ApplyJsonValues[T any](req Request[T], body io.ReadCloser) error {
 	decoder := json.NewDecoder(body)
 	decoder.DisallowUnknownFields()
 
-	return decoder.Decode(&req)
+	if err := decoder.Decode(&req); err != nil {
+		return err
+	}
+	if err := binding.Validator.ValidateStruct(req); err != nil {
+		return err
+	}
+
+	return nil
 }

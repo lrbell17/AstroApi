@@ -13,9 +13,9 @@ type (
 	ExoplanetRequestDTO struct {
 		Name   string  `json:"name" binding:"required"`
 		StarId uint    `json:"star_id" binding:"required"`
-		Mass   float32 `json:"mass"`
-		Radius float32 `json:"radius"`
-		Dist   float32 `json:"dist"`
+		Mass   float32 `json:"mass" binding:"gt=0"`
+		Radius float32 `json:"radius" binding:"gt=0"`
+		Dist   float32 `json:"dist" binding:"gt=0"`
 	}
 )
 
