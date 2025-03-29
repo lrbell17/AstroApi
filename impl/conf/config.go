@@ -1,10 +1,10 @@
 package conf
 
 import (
+	"fmt"
 	"os"
 	"sync"
 
-	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
@@ -14,6 +14,7 @@ type (
 		Datasource Datasource `yaml:"datasource"`
 		Cache      Cache      `yaml:"cache"`
 		Api        Api        `yaml:"api"`
+		Logger     Logger     `yaml:"logger"`
 	}
 )
 
@@ -28,6 +29,10 @@ func InitConfig(configFile string) error {
 
 	once.Do(func() {
 		configInstance, initErr = loadConfig(configFile)
+		if initErr != nil {
+			return
+		}
+		initErr = initLogger(&configInstance.Logger)
 	})
 	return initErr
 }
@@ -43,12 +48,9 @@ func GetConfig() (*Config, error) {
 // Initialize configuration from file
 func loadConfig(configFile string) (*Config, error) {
 
-	log.Infof("Loading configuration from %v", configFile)
-
 	file, err := os.Open(configFile)
 	if err != nil {
-		log.Errorf("Error opening config file: %v", err)
-		return &Config{}, err
+		return &Config{}, fmt.Errorf("error opening config file: %v", err)
 	}
 	defer file.Close()
 
@@ -56,8 +58,7 @@ func loadConfig(configFile string) (*Config, error) {
 	decoder := yaml.NewDecoder(file)
 	err = decoder.Decode(&config)
 	if err != nil {
-		log.Errorf("Error parsing YAML config: %v", err)
-		return &Config{}, err
+		return &Config{}, fmt.Errorf("error parsing YAML config: %v", err)
 	}
 
 	return config, nil

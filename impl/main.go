@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/lrbell17/astroapi/impl/api"
 	"github.com/lrbell17/astroapi/impl/api/auth"
@@ -21,12 +22,12 @@ func main() {
 	flag.StringVar(&configFile, "c", configFile, "config file path")
 	flag.Parse()
 	if configFile == "" {
-		log.Fatalf("Config file path flag '-c' is required")
+		panic("Config file path flag '-c' is required")
 	}
-
 	if err := conf.InitConfig(configFile); err != nil {
-		log.Fatal("Failed to build configuration, exiting.")
+		panic(fmt.Sprintf("Failed to build configuration: %v", err))
 	}
+	log.Info("Configuration initilized successfully")
 
 	// Initialize DB
 	database.Connect()

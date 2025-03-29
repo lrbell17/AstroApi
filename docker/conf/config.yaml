@@ -10,6 +10,9 @@ database:
     retry_interval: 1
 api:
   jwk_path: /app/conf/jwk.json
+logger:
+  log_level: INFO
+  log_file: /app/logs/astroapi.log
 cache: 
   host: redis
   port: 6379
