@@ -8,14 +8,14 @@ import (
 	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 	log "github.com/sirupsen/logrus"
 )
 
 type (
 	// Exoplanet response interface
 	ExoplanetResponse interface {
-		Response[model.Exoplanet]
+		Response[dao.Exoplanet]
 	}
 	// DTO for exoplanet response
 	ExoplanetResponseDTO struct {
@@ -36,8 +36,8 @@ type (
 	}
 )
 
-// Get exoplanet response DTO from exoplanet model
-func (resp *ExoplanetResponseDTO) ResponseFromModel(planet *model.Exoplanet, datasourceConf *conf.Datasource) {
+// Get exoplanet response DTO from exoplanet DAO
+func (resp *ExoplanetResponseDTO) ResponseFromDao(planet *dao.Exoplanet, datasourceConf *conf.Datasource) {
 
 	if resp == nil || planet == nil || datasourceConf == nil {
 		return

@@ -1,4 +1,4 @@
-package model
+package dao
 
 import (
 	"fmt"
@@ -47,7 +47,7 @@ func (*Star) ValidateColumns(header map[string]int) error {
 }
 
 // Parse star from CSV record
-func (*Star) ParseModel(record []string, colIndices map[string]int, config conf.Datasource) AstroModel {
+func (*Star) ParseFromCSV(record []string, colIndices map[string]int, config conf.Datasource) AstroDAO {
 	starDataConf := config.StarData
 	return &Star{
 		Name:   GetStringValue(record, colIndices, starDataConf.Name.ColName),
@@ -58,11 +58,11 @@ func (*Star) ParseModel(record []string, colIndices map[string]int, config conf.
 }
 
 // Insert batch of stars into DB
-func (e *Star) CreateBatch(db *gorm.DB, batch []AstroModel) error {
+func (e *Star) CreateBatch(db *gorm.DB, batch []AstroDAO) (int, error) {
 
 	batchSize := len(batch)
 	if batchSize == 0 {
-		return fmt.Errorf("empty batch")
+		return 0, fmt.Errorf("empty batch")
 	}
 
 	stars := make([]*Star, 0, len(batch))
@@ -71,12 +71,16 @@ func (e *Star) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 			stars = append(stars, exo)
 		}
 	}
-	return db.Model(&Star{}).
+
+	result := db.Model(&Star{}).
 		Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "name"}}, DoNothing: true}). // Ignore duplicates
-		CreateInBatches(stars, batchSize).Error
+		CreateInBatches(stars, batchSize)
+
+	return int(result.RowsAffected), result.Error
+
 }
 
-// Add an exoplanet to s star
+// Add an exoplanet to a star
 func (s *Star) AddExoplanet(e *Exoplanet) {
 	if s == nil {
 		return

@@ -1,7 +1,7 @@
 package repos
 
 import (
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -16,8 +16,8 @@ func NewExoplanetRepo(db *gorm.DB) *ExoplanetRepo {
 }
 
 // Get planet by ID from database
-func (r *ExoplanetRepo) GetById(id uint) (*model.Exoplanet, error) {
-	var planet model.Exoplanet
+func (r *ExoplanetRepo) GetById(id uint) (*dao.Exoplanet, error) {
+	var planet dao.Exoplanet
 	result := r.db.Preload("Star").First(&planet, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -26,7 +26,7 @@ func (r *ExoplanetRepo) GetById(id uint) (*model.Exoplanet, error) {
 }
 
 // Add planet to repo
-func (r *ExoplanetRepo) Insert(e *model.Exoplanet) (*model.Exoplanet, error) {
+func (r *ExoplanetRepo) Insert(e *dao.Exoplanet) (*dao.Exoplanet, error) {
 
 	if err := r.db.Create(e).Error; err != nil {
 		log.Errorf("Error adding planet: %v", err)
@@ -34,4 +34,10 @@ func (r *ExoplanetRepo) Insert(e *model.Exoplanet) (*model.Exoplanet, error) {
 	}
 
 	return e, nil
+}
+
+// Insert batch of exoplanets
+func (r *ExoplanetRepo) BatchInsert(planets []*dao.Exoplanet) (int, error) {
+	result := r.db.Model(&dao.Exoplanet{}).CreateInBatches(planets, len(planets))
+	return int(result.RowsAffected), result.Error
 }

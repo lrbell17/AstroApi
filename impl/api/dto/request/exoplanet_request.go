@@ -1,13 +1,13 @@
 package request
 
 import (
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 )
 
 type (
 	// Exoplanet request interface
 	ExoplanetRequest interface {
-		Request[model.Exoplanet]
+		Request[dao.Exoplanet]
 	}
 	// Exoplanet Request DTO
 	ExoplanetRequestDTO struct {
@@ -19,13 +19,13 @@ type (
 	}
 )
 
-// Get Exoplanet model from Exoplanet request DTO
-func (req *ExoplanetRequestDTO) ModelFromRequest() *model.Exoplanet {
+// Get Exoplanet DAO from Exoplanet request DTO
+func (req *ExoplanetRequestDTO) DaoFromRequest() *dao.Exoplanet {
 	if req == nil {
 		return nil
 	}
 
-	return &model.Exoplanet{
+	return &dao.Exoplanet{
 		Name:   req.Name,
 		StarID: req.StarId,
 		Mass:   req.Mass,

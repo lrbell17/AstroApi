@@ -9,7 +9,7 @@ import (
 
 // Generic request interface
 type Request[T any] interface {
-	ModelFromRequest() *T
+	DaoFromRequest() *T
 }
 
 // Construct Request DTO from JSON body

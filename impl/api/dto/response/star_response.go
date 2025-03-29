@@ -8,14 +8,14 @@ import (
 	"github.com/lrbell17/astroapi/impl/api/dto"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 	log "github.com/sirupsen/logrus"
 )
 
 type (
 	// Star response interface
 	StarResponse interface {
-		Response[model.Star]
+		Response[dao.Star]
 	}
 	// DTO for star response
 	StarResponseDTO struct {
@@ -36,8 +36,8 @@ type (
 	}
 )
 
-// Get star response DTO from star model
-func (resp *StarResponseDTO) ResponseFromModel(star *model.Star, datasourceConf *conf.Datasource) {
+// Get star response DTO from star DAO
+func (resp *StarResponseDTO) ResponseFromDao(star *dao.Star, datasourceConf *conf.Datasource) {
 
 	if resp == nil || star == nil || datasourceConf == nil {
 		return

@@ -3,9 +3,9 @@ package services
 import (
 	"github.com/lrbell17/astroapi/impl/api/dto/request"
 	"github.com/lrbell17/astroapi/impl/api/dto/response"
-	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
+	"github.com/lrbell17/astroapi/impl/persistence/repos"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -43,7 +43,7 @@ func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetResponseDTO, err
 	}
 
 	// Build response
-	planetResp.ResponseFromModel(planet, &s.config.Datasource)
+	planetResp.ResponseFromDao(planet, &s.config.Datasource)
 
 	// Store in cache
 	cache.PutCache(planetResp, cacheKey)
@@ -53,7 +53,7 @@ func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetResponseDTO, err
 
 // Call repo to add planet to DB
 func (s *ExoplanetService) AddPlanet(planetReq *request.ExoplanetRequestDTO) (*response.ExoplanetResponseDTO, error) {
-	planet := planetReq.ModelFromRequest()
+	planet := planetReq.DaoFromRequest()
 
 	// Check if star is present in DB
 	star, err := s.starRepo.GetById(planet.StarID)
@@ -70,10 +70,10 @@ func (s *ExoplanetService) AddPlanet(planetReq *request.ExoplanetRequestDTO) (*r
 	// Build response
 	planet.Star = *star
 	planetResp := &response.ExoplanetResponseDTO{}
-	planetResp.ResponseFromModel(planet, &s.config.Datasource)
+	planetResp.ResponseFromDao(planet, &s.config.Datasource)
 	star.AddExoplanet(planet)
 	starResp := &response.StarResponseDTO{}
-	starResp.ResponseFromModel(star, &s.config.Datasource)
+	starResp.ResponseFromDao(star, &s.config.Datasource)
 
 	// Add to cache
 	cache.PutCache(planetResp, planetResp.GetCacheKey(planetResp.ID))

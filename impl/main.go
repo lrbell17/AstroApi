@@ -6,11 +6,11 @@ import (
 	"github.com/lrbell17/astroapi/impl/api"
 	"github.com/lrbell17/astroapi/impl/api/auth"
 	"github.com/lrbell17/astroapi/impl/api/handlers"
-	"github.com/lrbell17/astroapi/impl/api/repos"
 	"github.com/lrbell17/astroapi/impl/api/services"
 	"github.com/lrbell17/astroapi/impl/cache"
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/database"
+	"github.com/lrbell17/astroapi/impl/persistence/database"
+	"github.com/lrbell17/astroapi/impl/persistence/repos"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -1,4 +1,4 @@
-package model
+package dao
 
 import (
 	"fmt"
@@ -49,7 +49,7 @@ func (*Exoplanet) ValidateColumns(header map[string]int) error {
 }
 
 // Parse exoplanet from CSV records
-func (*Exoplanet) ParseModel(record []string, colIndices map[string]int, config conf.Datasource) AstroModel {
+func (*Exoplanet) ParseFromCSV(record []string, colIndices map[string]int, config conf.Datasource) AstroDAO {
 
 	explanetDataConf := config.ExoplanetData
 	return &Exoplanet{
@@ -62,11 +62,11 @@ func (*Exoplanet) ParseModel(record []string, colIndices map[string]int, config 
 }
 
 // Insert batch of exoplanets into DB
-func (e *Exoplanet) CreateBatch(db *gorm.DB, batch []AstroModel) error {
+func (e *Exoplanet) CreateBatch(db *gorm.DB, batch []AstroDAO) (int, error) {
 
 	batchSize := len(batch)
 	if batchSize == 0 {
-		return fmt.Errorf("empty batch")
+		return 0, fmt.Errorf("empty batch")
 	}
 
 	exoplanets := make([]*Exoplanet, 0, len(batch))
@@ -82,7 +82,9 @@ func (e *Exoplanet) CreateBatch(db *gorm.DB, batch []AstroModel) error {
 			exoplanets = append(exoplanets, exo)
 		}
 	}
-	return db.Model(&Exoplanet{}).CreateInBatches(exoplanets, batchSize).Error
+	result := db.Model(&Exoplanet{}).CreateInBatches(exoplanets, batchSize)
+
+	return int(result.RowsAffected), result.Error
 }
 
 // Enrich exoplanet with the star ID by star name

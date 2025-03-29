@@ -7,28 +7,28 @@ import (
 	"os"
 
 	"github.com/lrbell17/astroapi/impl/conf"
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 	log "github.com/sirupsen/logrus"
 )
 
 func InitDb() (err error) {
 
 	// Create tables
-	err = createTable(&model.Exoplanet{})
+	err = createTable(&dao.Exoplanet{})
 	if err != nil {
 		return
 	}
-	err = createTable(&model.Star{})
+	err = createTable(&dao.Star{})
 	if err != nil {
 		return
 	}
 
 	// Import from CSV
-	err = importFromCSV(&model.Star{})
+	err = importFromCSV(&dao.Star{})
 	if err != nil {
 		return
 	}
-	err = importFromCSV(&model.Exoplanet{})
+	err = importFromCSV(&dao.Exoplanet{})
 	if err != nil {
 		return
 	}
@@ -37,12 +37,12 @@ func InitDb() (err error) {
 }
 
 // Create SQL table from model
-func createTable(model model.AstroModel) (err error) {
+func createTable(dao dao.AstroDAO) (err error) {
 
-	tableName := model.GetTableName()
+	tableName := dao.GetTableName()
 	log.Infof("Creating table %v", tableName)
 
-	err = DB.AutoMigrate(model)
+	err = DB.AutoMigrate(dao)
 	if err != nil {
 		log.Errorf("Unable to create table %v: %v", tableName, err)
 	}
@@ -51,7 +51,7 @@ func createTable(model model.AstroModel) (err error) {
 	return
 }
 
-func importFromCSV(astroModel model.AstroModel) error {
+func importFromCSV(astroDao dao.AstroDAO) error {
 
 	config, _ := conf.GetConfig()
 	filePath := config.Datasource.File
@@ -76,16 +76,16 @@ func importFromCSV(astroModel model.AstroModel) error {
 	for idx, col := range header {
 		colIndices[col] = idx
 	}
-	err = astroModel.ValidateColumns(colIndices)
+	err = astroDao.ValidateColumns(colIndices)
 	if err != nil {
 		return err
 	}
 
 	// Load data in batches
-	log.Infof("Loading data for %v", astroModel.GetTableName())
+	log.Infof("Loading data for %v", astroDao.GetTableName())
 	batchSize := config.Database.Performance.Batchsize
 	lineNum, errorCount, successCount := 1, 0, 0
-	batch := make([]model.AstroModel, 0, batchSize)
+	batch := make([]dao.AstroDAO, 0, batchSize)
 	for {
 
 		record, err := reader.Read()
@@ -99,30 +99,33 @@ func importFromCSV(astroModel model.AstroModel) error {
 			continue
 		}
 
-		recordObj := astroModel.ParseModel(record, colIndices, config.Datasource)
+		recordObj := astroDao.ParseFromCSV(record, colIndices, config.Datasource)
 		batch = append(batch, recordObj)
 
 		// Insert batch
 		if len(batch) >= batchSize {
-			if err := astroModel.CreateBatch(DB, batch); err != nil {
+			astroDao.CreateBatch(DB, batch)
+			rowsInserted, err := astroDao.CreateBatch(DB, batch)
+			if err != nil {
 				log.Warnf("Error inserting batch: %v", err)
 				errorCount += len(batch)
 			} else {
-				successCount += len(batch)
+				successCount += rowsInserted
 			}
 			// reset batch
-			batch = make([]model.AstroModel, 0, batchSize)
+			batch = make([]dao.AstroDAO, 0, batchSize)
 		}
 
 	}
 
 	// Insert remaining rows
 	if len(batch) > 0 {
-		if err := astroModel.CreateBatch(DB, batch); err != nil {
+		rowsInserted, err := astroDao.CreateBatch(DB, batch)
+		if err != nil {
 			log.Warnf("Error inserting batch: %v", err)
 			errorCount += len(batch)
 		} else {
-			successCount += len(batch)
+			successCount += rowsInserted
 		}
 	}
 

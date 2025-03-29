@@ -1,13 +1,13 @@
 package request
 
 import (
-	"github.com/lrbell17/astroapi/impl/model"
+	"github.com/lrbell17/astroapi/impl/persistence/dao"
 )
 
 type (
 	// Star request interface
 	StarRequest interface {
-		Request[model.Star]
+		Request[dao.Star]
 	}
 	// DTO for star request
 	StarRequestDTO struct {
@@ -18,13 +18,13 @@ type (
 	}
 )
 
-// Get Star model from Star request DTO
-func (req *StarRequestDTO) ModelFromRequest() *model.Star {
+// Get Star DAO from Star request DTO
+func (req *StarRequestDTO) DaoFromRequest() *dao.Star {
 	if req == nil {
 		return nil
 	}
 
-	return &model.Star{
+	return &dao.Star{
 		Name:   req.Name,
 		Mass:   req.Mass,
 		Radius: req.Radius,
