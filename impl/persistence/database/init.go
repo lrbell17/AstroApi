@@ -104,11 +104,11 @@ func importFromCSV(astroDao dao.AstroDAO) error {
 
 		// Insert batch
 		if len(batch) >= batchSize {
-			astroDao.CreateBatch(DB, batch)
 			rowsInserted, err := astroDao.CreateBatch(DB, batch)
 			if err != nil {
 				log.Warnf("Error inserting batch: %v", err)
-				errorCount += len(batch)
+				errorCount += len(batch) - rowsInserted
+				successCount += rowsInserted
 			} else {
 				successCount += rowsInserted
 			}
@@ -123,7 +123,8 @@ func importFromCSV(astroDao dao.AstroDAO) error {
 		rowsInserted, err := astroDao.CreateBatch(DB, batch)
 		if err != nil {
 			log.Warnf("Error inserting batch: %v", err)
-			errorCount += len(batch)
+			errorCount += len(batch) - rowsInserted
+			successCount += rowsInserted
 		} else {
 			successCount += rowsInserted
 		}
