@@ -8,10 +8,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	logger = logrus.New()
-)
-
 type Logger struct {
 	LogLevel string `yaml:"log_level"`
 	LogFile  string `yaml:"log_file"`
@@ -35,12 +31,6 @@ func initLogger(loggerConfig *Logger) error {
 
 	logrus.SetOutput(logFile)
 	logrus.SetLevel(level)
-	logger = logrus.StandardLogger()
 
 	return nil
-
-}
-
-func GetLogger() *logrus.Logger {
-	return logger
 }

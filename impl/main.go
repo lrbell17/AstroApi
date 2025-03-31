@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// Start API
-	log.Info("Starting Astro API")
+	log.Info("Starting Astro API on port 8080")
 
 	starRepo := repos.NewStarRepo(database.DB)
 	starService := services.NewStarService(starRepo)
