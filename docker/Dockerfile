@@ -22,4 +22,4 @@ COPY ./docker/data/ /app/data/
 RUN chmod +x /app/bin/astroapi
 
 EXPOSE 8080
-CMD ["/bin/sh", "-c", "/app/bin/astroapi -c /app/conf/config.yaml >/dev/null 2>&1 & while [ ! -f /app/logs/astroapi.log ]; do sleep 1; done; tail -f /app/logs/astroapi.log"]
+CMD ["/bin/sh", "-c", "/app/bin/astroapi -c /app/conf/config.yaml & while [ ! -f /app/logs/astroapi.log ]; do sleep 1; done; tail -f /app/logs/astroapi.log"]
