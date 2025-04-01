@@ -43,6 +43,7 @@ func (h *ExoplanetHandler) GetById(c *gin.Context) {
 	c.JSON(http.StatusOK, planet)
 }
 
+// Handler function to add planet
 func (h *ExoplanetHandler) Post(c *gin.Context) {
 
 	var req request.ExoplanetRequestDTO
@@ -61,5 +62,17 @@ func (h *ExoplanetHandler) Post(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, planetResp)
+
+}
+
+// Handler function to get all habitable planets
+func (h *ExoplanetHandler) GetHabitablePlanets(c *gin.Context) {
+
+	count, planets, err := h.service.GetHabitable()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": services.ErrInternal})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"count": count, "planets": planets})
 
 }

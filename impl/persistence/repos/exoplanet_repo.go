@@ -41,3 +41,10 @@ func (r *ExoplanetRepo) BatchInsert(planets []*dao.Exoplanet) (int, error) {
 	result := r.db.Model(&dao.Exoplanet{}).CreateInBatches(planets, len(planets))
 	return int(result.RowsAffected), result.Error
 }
+
+// Get all exoplanets
+func (r *ExoplanetRepo) GetAll() (exoplanets []dao.Exoplanet, err error) {
+	result := r.db.Preload("Star").Find(&exoplanets)
+	err = result.Error
+	return
+}

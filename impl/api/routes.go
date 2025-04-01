@@ -12,6 +12,7 @@ func SetupRouter(exoplanetHandler *handlers.ExoplanetHandler, starHandler *handl
 	api := r.Group("/api").Use(middlewares.JwtAuthMiddleware())
 	{
 		api.GET("/exoplanets/:id", exoplanetHandler.GetById)
+		api.GET("/exoplanets/habitable", exoplanetHandler.GetHabitablePlanets)
 		api.POST("/exoplanets", exoplanetHandler.Post)
 
 		api.GET("/stars/:id", starHandler.GetById)

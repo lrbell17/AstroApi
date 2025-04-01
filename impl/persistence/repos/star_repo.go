@@ -46,3 +46,10 @@ func (r *StarRepo) BatchInsert(stars []*dao.Star) (int, error) {
 
 	return int(result.RowsAffected), result.Error
 }
+
+// Get all stars
+func (r *StarRepo) GetAll() (stars []dao.Star, err error) {
+	result := r.db.Preload("Exoplanets").Find(&stars)
+	err = result.Error
+	return
+}

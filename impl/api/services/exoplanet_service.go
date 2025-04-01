@@ -39,6 +39,7 @@ func (s *ExoplanetService) GetById(id uint) (*response.ExoplanetResponseDTO, err
 	// Get from DB
 	planet, err := s.repo.GetById(id)
 	if err != nil {
+		log.Warnf("Unable to locate planet with ID %v", id)
 		return nil, err
 	}
 
@@ -58,12 +59,14 @@ func (s *ExoplanetService) AddPlanet(planetReq *request.ExoplanetRequestDTO) (*r
 	// Check if star is present in DB
 	star, err := s.starRepo.GetById(planet.StarID)
 	if err != nil {
+		log.Warnf("Unable to locate star for planet %v: %v", planet.Name, err)
 		return nil, err
 	}
 
 	// Insert to DB
 	planet, err = s.repo.Insert(planet)
 	if err != nil {
+		log.Errorf("Error adding planet %v to database: %v", planet.Name, err)
 		return nil, err
 	}
 
@@ -80,4 +83,29 @@ func (s *ExoplanetService) AddPlanet(planetReq *request.ExoplanetRequestDTO) (*r
 	cache.PutCache(starResp, starResp.GetCacheKey(starResp.ID))
 
 	return planetResp, nil
+}
+
+// Get all habitable planets
+func (s *ExoplanetService) GetHabitable() (uint8, []response.ExoplanetResponseDTO, error) {
+
+	var habitablePlanets []response.ExoplanetResponseDTO
+
+	stars, err := s.starRepo.GetAll()
+	if err != nil {
+		log.Errorf("Error getting stars from database: %v", err)
+		return 0, nil, err
+	}
+
+	var habitableCount uint8
+	for _, star := range stars {
+		for _, exoplanet := range star.Exoplanets {
+			if exoplanet.IsInHabitableZone(&star) {
+				planetResp := &response.ExoplanetResponseDTO{}
+				planetResp.ResponseFromDao(&exoplanet, &s.config.Datasource)
+				habitablePlanets = append(habitablePlanets, *planetResp)
+				habitableCount++
+			}
+		}
+	}
+	return habitableCount, habitablePlanets, nil
 }
