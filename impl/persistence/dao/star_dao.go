@@ -13,12 +13,15 @@ const starTableName = "stars"
 
 type (
 	Star struct {
-		ID         uint   `gorm:"primaryKey"`
-		Name       string `gorm:"uniqueIndex"`
-		Mass       float32
-		Radius     float32
-		Temp       float32
-		Exoplanets []Exoplanet `gorm:"foreignKey:StarID"`
+		ID                 uint   `gorm:"primaryKey"`
+		Name               string `gorm:"uniqueIndex"`
+		Mass               float32
+		Radius             float32
+		Temp               float32
+		Luminosity         float32
+		HabitableZoneLower float32
+		HabitableZoneUpper float32
+		Exoplanets         []Exoplanet `gorm:"foreignKey:StarID"`
 	}
 )
 
@@ -67,8 +70,9 @@ func (e *Star) CreateBatch(db *gorm.DB, batch []AstroDAO) (int, error) {
 
 	stars := make([]*Star, 0, len(batch))
 	for _, record := range batch {
-		if exo, ok := record.(*Star); ok {
-			stars = append(stars, exo)
+		if s, ok := record.(*Star); ok {
+			s.EnrichFields()
+			stars = append(stars, s)
 		}
 	}
 

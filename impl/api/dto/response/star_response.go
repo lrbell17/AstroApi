@@ -19,12 +19,15 @@ type (
 	}
 	// DTO for star response
 	StarResponseDTO struct {
-		ID      uint              `json:"id"`
-		Name    string            `json:"name" binding:"required"`
-		Mass    dto.MeasuredValue `json:"mass"`
-		Radius  dto.MeasuredValue `json:"radius"`
-		Temp    dto.MeasuredValue `json:"temp"`
-		Planets []StarPlanetDTO   `json:"planets"`
+		ID                 uint              `json:"id"`
+		Name               string            `json:"name" binding:"required"`
+		Mass               dto.MeasuredValue `json:"mass"`
+		Radius             dto.MeasuredValue `json:"radius"`
+		Temp               dto.MeasuredValue `json:"temp"`
+		Luminosity         dto.MeasuredValue `json:"luminosity"`
+		HabitableZoneLower dto.MeasuredValue `json:"habitable_zone_lower_bound"`
+		HabitableZoneUpper dto.MeasuredValue `json:"habitable_zone_upper_bound"`
+		Planets            []StarPlanetDTO   `json:"planets"`
 	}
 	// DTO for exoplanet data nested within star response
 	StarPlanetDTO struct {
@@ -59,6 +62,9 @@ func (resp *StarResponseDTO) ResponseFromDao(star *dao.Star, datasourceConf *con
 	resp.Mass = dto.AsMeasuredValue(star.Mass, datasourceConf.StarData.Mass.Unit)
 	resp.Radius = dto.AsMeasuredValue(star.Radius, datasourceConf.StarData.Radius.Unit)
 	resp.Temp = dto.AsMeasuredValue(star.Temp, datasourceConf.StarData.Temp.Unit)
+	resp.Luminosity = dto.AsMeasuredValue(star.Luminosity, "Sun luminosity")
+	resp.HabitableZoneLower = dto.AsMeasuredValue(star.HabitableZoneLower, "AU")
+	resp.HabitableZoneUpper = dto.AsMeasuredValue(star.HabitableZoneUpper, "AU")
 	resp.Planets = planets
 
 }

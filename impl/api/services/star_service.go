@@ -51,6 +51,7 @@ func (s *StarService) GetById(id uint) (*response.StarResponseDTO, error) {
 func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarResponseDTO, error) {
 
 	star := starReq.DaoFromRequest()
+	star.EnrichFields()
 
 	// Insert to DB
 	star, err := s.repo.Insert(star)

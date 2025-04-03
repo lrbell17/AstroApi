@@ -45,15 +45,32 @@ func ParseFloat(val string) float32 {
 	return float32(floatVal)
 }
 
-// Get habitable zone of star
-func (s *Star) GetHabitableZone() (lower float64, upper float64) {
+// Get luminosity of star from temp and radius using Stefan-Boltzmann law
+func (s *Star) GetLuminosity() float32 {
 	radius, temp := float64(s.Radius*RsunMeters), float64(s.Temp)
-	luminosity := (4 * math.Pi * math.Pow(radius, 2) * Sigma * math.Pow(temp, 4)) / Lsun
+	if radius == 0 || temp == 0 {
+		log.Errorf("Star %v has invalid radius or temp", s.ID)
+		return 0
+	}
 
+	luminosity := (4 * math.Pi * math.Pow(radius, 2) * Sigma * math.Pow(temp, 4)) / Lsun
+	return float32(luminosity)
+}
+
+// Get habitable zone of star
+func (s *Star) GetHabitableZone() (lower float32, upper float32) {
+	luminosity := float64(s.GetLuminosity())
 	lowerBound, upperBound := math.Sqrt(luminosity/1.1), math.Sqrt(luminosity/0.53)
 
 	log.Debugf("Habitable zone of star %v with luminosity %f: [%f, %f]", s.ID, luminosity, lowerBound, upperBound)
-	return lowerBound, upperBound
+	return float32(lowerBound), float32(upperBound)
+}
+
+// Add calculated fields to star
+func (s *Star) EnrichFields() {
+	lower, upper := s.GetHabitableZone()
+	s.Luminosity = s.GetLuminosity()
+	s.HabitableZoneLower, s.HabitableZoneUpper, s.Luminosity = lower, upper, s.GetLuminosity()
 }
 
 // Check if exoplanet is in the habitable zone of its star
