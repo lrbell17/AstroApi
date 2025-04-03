@@ -58,31 +58,48 @@ func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarRe
 	if err != nil {
 		return nil, err
 	}
-	// Add to cache
+	// Get response
 	starResp := &response.StarResponseDTO{}
 	starResp.ResponseFromDao(star, &s.config.Datasource)
 
+	// Add to cache
 	cache.PutCache(starResp, starResp.GetCacheKey(starResp.ID))
+
+	// Invalidate cache for star name search
+	cache.InvalidateCacheKeys("star_list*")
 
 	return starResp, nil
 
 }
 
-// Call repo to seach for star by name
-func (s *StarService) SearchByName(name string, limit int) ([]response.StarResponseDTO, error) {
-	var starResponses []response.StarResponseDTO
+// Call repo to search for star by name
+func (s *StarService) SearchByName(name string, limit int) (*response.StarResponseDTOList, error) {
+	starResponses := &response.StarResponseDTOList{
+		Stars: []response.StarResponseDTO{},
+	}
 
+	// Check cache
+	cacheKey := starResponses.GetCacheKey(name)
+	if err := starResponses.GetCached(cacheKey); err == nil {
+		return starResponses, nil
+	}
+
+	// Query DB
 	stars, err := s.repo.SearchByName(name, limit)
 	if err != nil {
 		log.Errorf("Unable to complete search for stars by name %v and limit %d: %v", name, limit, err)
-		return nil, err
+		return starResponses, err
 	}
 
+	// Get response
 	for _, star := range stars {
 		starResp := &response.StarResponseDTO{}
 		starResp.ResponseFromDao(&star, &s.config.Datasource)
-		starResponses = append(starResponses, *starResp)
+		starResponses.Stars = append(starResponses.Stars, *starResp)
 	}
+
+	// Add response to cache
+	cache.PutCache(starResponses, cacheKey)
 
 	return starResponses, nil
 }

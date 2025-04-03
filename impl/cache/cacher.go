@@ -10,7 +10,7 @@ import (
 type (
 	Cacher interface {
 		GetCached(cacheKey string) error
-		GetCacheKey(id uint) string
+		GetCacheKey(id any) string
 	}
 )
 
@@ -33,6 +33,25 @@ func PutCache(c Cacher, cacheKey string) {
 		err = RedisClient.Set(ctx, cacheKey, data, Expiry).Err()
 		if err != nil {
 			log.Warnf("Unable to add %v to cache: %v", cacheKey, err)
+		}
+	}()
+}
+
+// Invalidate cache for keys matching pattern
+func InvalidateCacheKeys(pattern string) {
+	go func() {
+		log.Infof("Deleting cache keys matching pattern %s", pattern)
+		ctx := context.Background()
+		iter := RedisClient.Scan(ctx, 0, pattern, 0).Iterator()
+
+		for iter.Next(ctx) {
+			if err := RedisClient.Del(ctx, iter.Val()).Err(); err != nil {
+				log.Warnf("Failed to delete cache key %s: %v", iter.Val(), err)
+			}
+		}
+
+		if err := iter.Err(); err != nil {
+			log.Errorf("Error scanning cache keys: %v", err)
 		}
 	}()
 }

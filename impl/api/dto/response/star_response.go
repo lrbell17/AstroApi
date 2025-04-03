@@ -70,7 +70,7 @@ func (resp *StarResponseDTO) ResponseFromDao(star *dao.Star, datasourceConf *con
 }
 
 // Get cache key for Star DTO by ID
-func (e *StarResponseDTO) GetCacheKey(id uint) string {
+func (e *StarResponseDTO) GetCacheKey(id any) string {
 	return fmt.Sprintf("star:%d", id)
 }
 

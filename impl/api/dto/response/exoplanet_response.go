@@ -64,7 +64,7 @@ func (resp *ExoplanetResponseDTO) ResponseFromDao(planet *dao.Exoplanet, datasou
 }
 
 // Get cache key for Exoplanet DTO by ID
-func (e *ExoplanetResponseDTO) GetCacheKey(id uint) string {
+func (e *ExoplanetResponseDTO) GetCacheKey(id any) string {
 	return fmt.Sprintf("exoplanet:%d", id)
 }
 
