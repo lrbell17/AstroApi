@@ -28,11 +28,14 @@ type (
 	}
 	// DTO for star data nested within exoplanet response
 	PlanetStarDTO struct {
-		ID     uint              `json:"id"`
-		Name   string            `json:"name"`
-		Mass   dto.MeasuredValue `json:"mass"`
-		Radius dto.MeasuredValue `json:"radius"`
-		Temp   dto.MeasuredValue `json:"temp"`
+		ID                 uint              `json:"id"`
+		Name               string            `json:"name"`
+		Mass               dto.MeasuredValue `json:"mass"`
+		Radius             dto.MeasuredValue `json:"radius"`
+		Temp               dto.MeasuredValue `json:"temp"`
+		Luminosity         dto.MeasuredValue `json:"luminosity"`
+		HabitableZoneLower dto.MeasuredValue `json:"habitable_zone_lower_bound"`
+		HabitableZoneUpper dto.MeasuredValue `json:"habitable_zone_upper_bound"`
 	}
 )
 
@@ -49,11 +52,14 @@ func (resp *ExoplanetResponseDTO) ResponseFromDao(planet *dao.Exoplanet, datasou
 	resp.Radius = dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit)
 	resp.Dist = dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit)
 	resp.Star = PlanetStarDTO{
-		ID:     planet.Star.ID,
-		Name:   planet.Star.Name,
-		Mass:   dto.AsMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
-		Radius: dto.AsMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
-		Temp:   dto.AsMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
+		ID:                 planet.Star.ID,
+		Name:               planet.Star.Name,
+		Mass:               dto.AsMeasuredValue(planet.Star.Mass, datasourceConf.StarData.Mass.Unit),
+		Radius:             dto.AsMeasuredValue(planet.Star.Radius, datasourceConf.StarData.Radius.Unit),
+		Temp:               dto.AsMeasuredValue(planet.Star.Temp, datasourceConf.StarData.Temp.Unit),
+		Luminosity:         dto.AsMeasuredValue(planet.Star.Luminosity, dao.LuminosityUnits),
+		HabitableZoneLower: dto.AsMeasuredValue(planet.Star.HabitableZoneLower, dao.HabitableZoneUnits),
+		HabitableZoneUpper: dto.AsMeasuredValue(planet.Star.HabitableZoneUpper, dao.HabitableZoneUnits),
 	}
 }
 

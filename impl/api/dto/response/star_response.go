@@ -62,9 +62,9 @@ func (resp *StarResponseDTO) ResponseFromDao(star *dao.Star, datasourceConf *con
 	resp.Mass = dto.AsMeasuredValue(star.Mass, datasourceConf.StarData.Mass.Unit)
 	resp.Radius = dto.AsMeasuredValue(star.Radius, datasourceConf.StarData.Radius.Unit)
 	resp.Temp = dto.AsMeasuredValue(star.Temp, datasourceConf.StarData.Temp.Unit)
-	resp.Luminosity = dto.AsMeasuredValue(star.Luminosity, "Sun luminosity")
-	resp.HabitableZoneLower = dto.AsMeasuredValue(star.HabitableZoneLower, "AU")
-	resp.HabitableZoneUpper = dto.AsMeasuredValue(star.HabitableZoneUpper, "AU")
+	resp.Luminosity = dto.AsMeasuredValue(star.Luminosity, dao.LuminosityUnits)
+	resp.HabitableZoneLower = dto.AsMeasuredValue(star.HabitableZoneLower, dao.HabitableZoneUnits)
+	resp.HabitableZoneUpper = dto.AsMeasuredValue(star.HabitableZoneUpper, dao.HabitableZoneUnits)
 	resp.Planets = planets
 
 }

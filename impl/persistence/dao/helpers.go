@@ -8,11 +8,13 @@ import (
 )
 
 const (
-	Sigma      = 5.670e-8 // Stefan-Boltzmann constant (W/m²K⁴)
-	Lsun       = 3.828e26 // Solar luminosity (W)
-	RsunMeters = 6.955e8  // Solar radius (m)
-	UpperConst = 1.1      // Solar flux scaling factor for upper bound of habitable zone
-	LowerConst = 0.53     // Solar flux scaling factor for lower bound of habitable zone
+	Sigma              = 5.670e-8 // Stefan-Boltzmann constant (W/m²K⁴)
+	Lsun               = 3.828e26 // Solar luminosity (W)
+	RsunMeters         = 6.955e8  // Solar radius (m)
+	UpperConst         = 1.1      // Solar flux scaling factor for upper bound of habitable zone
+	LowerConst         = 0.53     // Solar flux scaling factor for lower bound of habitable zone
+	LuminosityUnits    = "Sun luminosity"
+	HabitableZoneUnits = "AU"
 )
 
 // Gets the string value of a CSV column
