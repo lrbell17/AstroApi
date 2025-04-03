@@ -67,3 +67,22 @@ func (s *StarService) AddStar(starReq *request.StarRequestDTO) (*response.StarRe
 	return starResp, nil
 
 }
+
+// Call repo to seach for star by name
+func (s *StarService) SearchByName(name string, limit int) ([]response.StarResponseDTO, error) {
+	var starResponses []response.StarResponseDTO
+
+	stars, err := s.repo.SearchByName(name, limit)
+	if err != nil {
+		log.Errorf("Unable to complete search for stars by name %v and limit %d: %v", name, limit, err)
+		return nil, err
+	}
+
+	for _, star := range stars {
+		starResp := &response.StarResponseDTO{}
+		starResp.ResponseFromDao(&star, &s.config.Datasource)
+		starResponses = append(starResponses, *starResp)
+	}
+
+	return starResponses, nil
+}

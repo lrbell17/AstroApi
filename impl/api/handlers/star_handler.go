@@ -64,3 +64,24 @@ func (h *StarHandler) Post(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, starResp)
 }
+
+// Handler function to search for stars by name
+func (h *StarHandler) SearchByName(c *gin.Context) {
+	search, limit := c.Query("search"), c.Query("limit")
+	if search == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrNoSearchQuery})
+		return
+	}
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil || limitInt <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrInvalidLimit})
+		return
+	}
+
+	result, err := h.service.SearchByName(search, limitInt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": services.ErrInternal})
+	}
+
+	c.JSON(http.StatusOK, result)
+}

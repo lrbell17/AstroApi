@@ -7,12 +7,14 @@ import (
 )
 
 const (
-	ErrStarExists   = "star already exists"
-	ErrPlanetExists = "planet already exists"
-	ErrInvalidId    = "invalid ID"
-	ErrInternal     = "internal error"
-	ErrNoJwt        = "missing auth token"
-	ErrInvalidJwt   = "invalid auth token"
+	ErrStarExists    = "star already exists"
+	ErrPlanetExists  = "planet already exists"
+	ErrInvalidId     = "invalid ID"
+	ErrInternal      = "internal error"
+	ErrNoJwt         = "missing auth token"
+	ErrInvalidJwt    = "invalid auth token"
+	ErrNoSearchQuery = "missing search query"
+	ErrInvalidLimit  = "limit is invalid"
 )
 
 // Checks if an error is a duplicate key error

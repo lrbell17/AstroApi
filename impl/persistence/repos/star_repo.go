@@ -53,3 +53,10 @@ func (r *StarRepo) GetAll() (stars []dao.Star, err error) {
 	err = result.Error
 	return
 }
+
+// Search for stars by name with partial matching
+func (r *StarRepo) SearchByName(name string, limit int) (stars []dao.Star, err error) {
+	result := r.db.Where("name ILIKE ?", "%"+name+"%").Limit(limit).Find(&stars)
+	err = result.Error
+	return
+}

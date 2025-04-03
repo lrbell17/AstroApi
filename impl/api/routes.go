@@ -16,6 +16,7 @@ func SetupRouter(exoplanetHandler *handlers.ExoplanetHandler, starHandler *handl
 		api.POST("/exoplanets", exoplanetHandler.Post)
 
 		api.GET("/stars/:id", starHandler.GetById)
+		api.GET("/stars", starHandler.SearchByName)
 		api.POST("/stars", starHandler.Post)
 	}
 	return r
