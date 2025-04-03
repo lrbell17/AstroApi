@@ -2,11 +2,10 @@ FROM golang:1.23 AS builder
 
 WORKDIR /build
 
-COPY go.mod go.sum ./
-COPY impl/ ./impl/
+COPY impl/ .
 
 RUN go mod download
-RUN CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o astroapi ./impl/main.go
+RUN CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o astroapi ./cmd/main.go
 
 
 FROM centos:7
