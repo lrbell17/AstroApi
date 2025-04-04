@@ -9,6 +9,8 @@ import (
 func SetupRouter(exoplanetHandler *handlers.ExoplanetHandler, starHandler *handlers.StarHandler) *gin.Engine {
 	r := gin.Default()
 
+	r.Use(middlewares.CORSMiddleware())
+
 	api := r.Group("/api").Use(middlewares.JwtAuthMiddleware())
 	{
 		api.GET("/exoplanets/:id", exoplanetHandler.GetById)

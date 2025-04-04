@@ -10,6 +10,7 @@ database:
     retry_interval: 1
 api:
   jwk_path: /app/conf/jwk.json
+  cors_allowed_origins: http://localhost:3000
 logger:
   log_level: INFO
   log_file: /app/logs/astroapi.log
