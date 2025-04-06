@@ -1,25 +1,23 @@
-import { useState } from "react";
-import StarSearch from "./components/StarSearch";
-import { Star } from "./types";
+import React, { useState } from 'react';
+import StarSearch from './components/StarSearch';
+import Login from './components/Login';
+import { Star } from './types';
 
-function App() {
+const App: React.FC = () => {
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
 
+  const handleStarSelect = (star: Star) => {
+    setSelectedStar(star);
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4" >Exoplanet Explorer</h1>
-
-      <StarSearch onSelect={(star: Star) => setSelectedStar(star)} />
-
-      {selectedStar && (
-        <div className="mt-6 p-4 border rounded shadow bg-white">
-          <h2 className="text-xl font-semibold">Selected Star</h2>
-          <p><strong>Name:</strong> {selectedStar.name}</p>
-          <p><strong>ID:</strong> {selectedStar.id}</p>
-        </div>
-      )}
+    <div>
+      <h1>Star Search</h1>
+      <Login />
+      <StarSearch onSelect={handleStarSelect} />
+      {selectedStar && <div>Selected Star: {selectedStar.name}</div>}
     </div>
   );
-}
+};
 
 export default App;

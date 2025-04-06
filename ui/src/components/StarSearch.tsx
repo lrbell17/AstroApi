@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Star } from "../types";
 
 const baseUrl = import.meta.env.VITE_ASTRO_API_URL;
-const token = import.meta.env.VITE_ASTRO_API_JWT;
 
 type Props = {
   onSelect: (star: Star) => void;
@@ -20,15 +19,13 @@ const StarSearch: React.FC<Props> = ({ onSelect }) => {
 
     const timeout = setTimeout(() => {
       fetch(`${baseUrl}/api/stars?search=${encodeURIComponent(query)}&limit=10`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        credentials: 'include'
       })
         .then((res) => {
           if (!res.ok) {
             throw new Error("Network response was not ok");
           }
-          return res.json();
+          return res.json();  
         })
         .then((data) => {
           setSuggestions(data.stars || []);
