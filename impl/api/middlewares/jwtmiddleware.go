@@ -14,16 +14,22 @@ import (
 func JwtAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		// Get JWT from header
+		var jwtStr string
+
+		// Try to get JWT from header
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": services.ErrNoJwt})
-			c.Abort()
-			return
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			jwtStr = strings.TrimPrefix(authHeader, "Bearer ")
+		} else {
+			// Fallback to cookie
+			cookie, err := c.Cookie("jwt")
+			if err == nil {
+				jwtStr = cookie
+			}
 		}
-		jwtStr := strings.TrimPrefix(authHeader, "Bearer ")
-		if jwtStr == authHeader {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": services.ErrInvalidJwt})
+
+		if jwtStr == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": services.ErrNoJwt})
 			c.Abort()
 			return
 		}
@@ -34,7 +40,7 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 				log.Error(jwt.ErrSignatureInvalid)
 				return nil, jwt.ErrSignatureInvalid
 			}
-			return auth.GetJwkPublicKey(), nil
+			return auth.GetPublicKey(), nil
 		})
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": services.ErrInvalidJwt})

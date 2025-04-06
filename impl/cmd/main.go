@@ -40,8 +40,8 @@ func main() {
 	// Initialize Redis cache
 	cache.Connect()
 
-	// Load JWK
-	if err := auth.LoadJwk(); err != nil {
+	// Load auth keys
+	if err := auth.LoadKeys(); err != nil {
 		log.Fatal(err)
 	}
 

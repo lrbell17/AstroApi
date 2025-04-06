@@ -9,7 +9,10 @@ database:
     max_retries: 5
     retry_interval: 1
 api:
+  jwt_expiry: 86400
+  jwt_domain: localhost
   jwk_path: /app/conf/jwk.json
+  rsa_private_path: /app/conf/private.pem
   cors_allowed_origins: http://localhost:3000
 logger:
   log_level: INFO
