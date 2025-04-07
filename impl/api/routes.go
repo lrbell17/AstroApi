@@ -18,6 +18,7 @@ func SetupRouter(exoplanetHandler *handlers.ExoplanetHandler, starHandler *handl
 	auth := r.Group("/api")
 	{
 		auth.POST("/login", Login)
+		auth.GET("/session", Session)
 	}
 
 	api := r.Group("/api").Use(middlewares.JwtAuthMiddleware())
@@ -52,4 +53,13 @@ func Login(c *gin.Context) {
 	c.SetCookie("jwt", token, config.Api.JwtExpiry, "/", config.Api.JwtDomain, false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "Logged in successfully"})
 
+}
+
+// Handler to check if the user is already logged in
+func Session(c *gin.Context) {
+	if user, exists := c.Get("user"); exists {
+		c.JSON(200, gin.H{"message": "Authenticated", "user": user})
+	} else {
+		c.AbortWithStatus(401)
+	}
 }

@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 
 const baseUrl = import.meta.env.VITE_ASTRO_API_URL;
 
-const Login: React.FC = () => {
+type Props = {
+  onLogin: () => void;
+};
+
+const Login: React.FC<Props> = ({ onLogin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +31,7 @@ const Login: React.FC = () => {
       }
 
       alert('Login successful!');
+      onLogin();
     } catch (error) {
       setError('Failed to log in');
     } finally {
@@ -37,7 +42,7 @@ const Login: React.FC = () => {
   return (
     <div>
       <button onClick={handleLogin} disabled={loading}>
-        {loading ? 'Logging in...' : 'Login'}
+        {loading ? 'Logging in...' : 'Access star search'}
       </button>
       {error && <p className="text-red-500">{error}</p>}
     </div>
