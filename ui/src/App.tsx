@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import SearchPage from './pages/SearchPage';
 import Login from './pages/Login';
+import StarryBackground from './components/StarryBackground';
+
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -25,26 +27,29 @@ const App: React.FC = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/search" replace />
-            ) : (
-              <Login onLogin={() => setIsAuthenticated(true)} />
-            )
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            isAuthenticated ? <SearchPage /> : <Navigate to="/" replace />
-          }
-        />
-      </Routes>
-    </Router>
+    <>
+      <StarryBackground />
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/search" replace />
+              ) : (
+                <Login onLogin={() => setIsAuthenticated(true)} />
+              )
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              isAuthenticated ? <SearchPage /> : <Navigate to="/" replace />
+            }
+          />
+        </Routes>
+      </Router>
+    </>
   );
 };
 
