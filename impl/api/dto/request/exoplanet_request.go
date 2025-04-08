@@ -11,11 +11,12 @@ type (
 	}
 	// Exoplanet Request DTO
 	ExoplanetRequestDTO struct {
-		Name   string  `json:"name" binding:"required"`
-		StarId uint    `json:"star_id" binding:"required"`
-		Mass   float32 `json:"mass" binding:"gt=0"`
-		Radius float32 `json:"radius" binding:"gt=0"`
-		Dist   float32 `json:"dist" binding:"gt=0"`
+		Name          string  `json:"name" binding:"required"`
+		StarId        uint    `json:"star_id" binding:"required"`
+		Mass          float32 `json:"mass" binding:"gt=0"`
+		Radius        float32 `json:"radius" binding:"gt=0"`
+		Dist          float32 `json:"dist" binding:"gt=0"`
+		OrbitalPeriod float32 `json:"orbital_period" binding:"gt=0"`
 	}
 )
 
@@ -26,10 +27,11 @@ func (req *ExoplanetRequestDTO) DaoFromRequest() *dao.Exoplanet {
 	}
 
 	return &dao.Exoplanet{
-		Name:   req.Name,
-		StarID: req.StarId,
-		Mass:   req.Mass,
-		Radius: req.Radius,
-		Dist:   req.Dist,
+		Name:          req.Name,
+		StarID:        req.StarId,
+		Mass:          req.Mass,
+		Radius:        req.Radius,
+		Dist:          req.Dist,
+		OrbitalPeriod: req.OrbitalPeriod,
 	}
 }

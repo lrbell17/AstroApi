@@ -15,6 +15,7 @@ export type Planet = {
   mass: MeasuredValue;
   radius: MeasuredValue;
   distance: MeasuredValue;
+  orbital_period: MeasuredValue;
 }
 
 export type MeasuredValue = {

@@ -7,11 +7,12 @@ type (
 		StarData      StarData      `yaml:"star_data"`
 	}
 	ExoplanetData struct {
-		Name   Column `yaml:"name"`
-		Host   Column `yaml:"host"`
-		Mass   Column `yaml:"mass"`
-		Radius Column `yaml:"radius"`
-		Dist   Column `yaml:"dist"`
+		Name          Column `yaml:"name"`
+		Host          Column `yaml:"host"`
+		Mass          Column `yaml:"mass"`
+		Radius        Column `yaml:"radius"`
+		Dist          Column `yaml:"dist"`
+		OrbitalPeriod Column `yaml:"orbital_period"`
 	}
 	StarData struct {
 		Name   Column `yaml:"name"`

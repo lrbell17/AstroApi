@@ -12,14 +12,15 @@ const planetTableName = "exoplanets"
 
 type (
 	Exoplanet struct {
-		ID     uint   `gorm:"primaryKey"`
-		Name   string `gorm:"uniqueIndex:idx_name_star"`
-		Host   string
-		StarID uint `gorm:"index;uniqueIndex:idx_name_star"`
-		Star   Star `gorm:"foreignKey:StarID"`
-		Mass   float32
-		Radius float32
-		Dist   float32
+		ID            uint   `gorm:"primaryKey"`
+		Name          string `gorm:"uniqueIndex:idx_name_star"`
+		Host          string
+		StarID        uint `gorm:"index;uniqueIndex:idx_name_star"`
+		Star          Star `gorm:"foreignKey:StarID"`
+		Mass          float32
+		Radius        float32
+		Dist          float32
+		OrbitalPeriod float32
 	}
 )
 
@@ -38,6 +39,7 @@ func (*Exoplanet) ValidateColumns(header map[string]int) error {
 		conf.Datasource.ExoplanetData.Mass.ColName,
 		conf.Datasource.ExoplanetData.Radius.ColName,
 		conf.Datasource.ExoplanetData.Dist.ColName,
+		conf.Datasource.ExoplanetData.OrbitalPeriod.ColName,
 	}
 	for _, col := range requiredCols {
 		if _, ok := header[col]; !ok {
@@ -51,13 +53,14 @@ func (*Exoplanet) ValidateColumns(header map[string]int) error {
 // Parse exoplanet from CSV records
 func (*Exoplanet) ParseFromCSV(record []string, colIndices map[string]int, config conf.Datasource) AstroDAO {
 
-	explanetDataConf := config.ExoplanetData
+	exoplanetDataConf := config.ExoplanetData
 	return &Exoplanet{
-		Name:   GetStringValue(record, colIndices, explanetDataConf.Name.ColName),
-		Host:   GetStringValue(record, colIndices, explanetDataConf.Host.ColName),
-		Dist:   GetFloatValue(record, colIndices, explanetDataConf.Dist.ColName),
-		Radius: GetFloatValue(record, colIndices, explanetDataConf.Radius.ColName),
-		Mass:   GetFloatValue(record, colIndices, explanetDataConf.Mass.ColName),
+		Name:          GetStringValue(record, colIndices, exoplanetDataConf.Name.ColName),
+		Host:          GetStringValue(record, colIndices, exoplanetDataConf.Host.ColName),
+		Dist:          GetFloatValue(record, colIndices, exoplanetDataConf.Dist.ColName),
+		Radius:        GetFloatValue(record, colIndices, exoplanetDataConf.Radius.ColName),
+		Mass:          GetFloatValue(record, colIndices, exoplanetDataConf.Mass.ColName),
+		OrbitalPeriod: GetFloatValue(record, colIndices, exoplanetDataConf.OrbitalPeriod.ColName),
 	}
 }
 

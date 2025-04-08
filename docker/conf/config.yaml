@@ -41,6 +41,9 @@ datasource:
     dist:  
       column: pl_orbsmax
       unit: AU
+    orbital_period:
+      column: pl_orbper
+      unit: days
   star_data:
     name:  
       column: hostname

@@ -31,11 +31,12 @@ type (
 	}
 	// DTO for exoplanet data nested within star response
 	StarPlanetDTO struct {
-		ID     uint              `json:"id"`
-		Name   string            `json:"name"`
-		Mass   dto.MeasuredValue `json:"mass"`
-		Radius dto.MeasuredValue `json:"radius"`
-		Dist   dto.MeasuredValue `json:"distance"`
+		ID            uint              `json:"id"`
+		Name          string            `json:"name"`
+		Mass          dto.MeasuredValue `json:"mass"`
+		Radius        dto.MeasuredValue `json:"radius"`
+		Dist          dto.MeasuredValue `json:"distance"`
+		OrbitalPeriod dto.MeasuredValue `json:"orbital_period"`
 	}
 )
 
@@ -49,11 +50,12 @@ func (resp *StarResponseDTO) ResponseFromDao(star *dao.Star, datasourceConf *con
 	planets := make([]StarPlanetDTO, len(star.Exoplanets))
 	for i, planet := range star.Exoplanets {
 		planets[i] = StarPlanetDTO{
-			ID:     planet.ID,
-			Name:   planet.Name,
-			Mass:   dto.AsMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit),
-			Radius: dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit),
-			Dist:   dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit),
+			ID:            planet.ID,
+			Name:          planet.Name,
+			Mass:          dto.AsMeasuredValue(planet.Mass, datasourceConf.ExoplanetData.Mass.Unit),
+			Radius:        dto.AsMeasuredValue(planet.Radius, datasourceConf.ExoplanetData.Radius.Unit),
+			Dist:          dto.AsMeasuredValue(planet.Dist, datasourceConf.ExoplanetData.Dist.Unit),
+			OrbitalPeriod: dto.AsMeasuredValue(planet.OrbitalPeriod, datasourceConf.ExoplanetData.OrbitalPeriod.Unit),
 		}
 	}
 
