@@ -56,7 +56,9 @@ func main() {
 	exoplanetService := services.NewExoplanetService(exoplanetRepo, starRepo)
 	exoplanetHandler := handlers.NewExoplanetHandler(exoplanetService)
 
-	r := api.SetupRouter(exoplanetHandler, starHandler)
+	authHandler := handlers.NewAuthHandler()
+
+	r := api.SetupRouter(authHandler, exoplanetHandler, starHandler)
 	r.Run(port)
 
 }

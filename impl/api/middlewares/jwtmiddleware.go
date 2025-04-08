@@ -48,6 +48,14 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Set username in context
+		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			if username, exists := claims["sub"].(string); exists {
+				log.Debugf("Setting user in context: %v", username)
+				c.Set("user", username)
+			}
+		}
+
 		c.Next()
 	}
 }

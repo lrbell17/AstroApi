@@ -15,7 +15,9 @@ WORKDIR /app
 RUN mkdir -p /app/bin /app/conf /app/logs /app/data
 
 COPY --from=builder /build/astroapi /app/bin/
-COPY ./docker/conf/ /app/conf/
+COPY ./docker/conf/config.yaml /app/conf/
+COPY ./docker/conf/private.pem /app/conf/
+COPY ./docker/conf/jwk.json /app/conf/
 COPY ./docker/data/ /app/data/
 
 RUN chmod +x /app/bin/astroapi

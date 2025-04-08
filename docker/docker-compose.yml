@@ -37,7 +37,9 @@ services:
       - "8080:8080"
 
   ui:
-    build: ./ui
+    build: 
+      context: ..
+      dockerfile: ui/Dockerfile
     container_name: astroui
     restart: always
     depends_on: 
