@@ -40,11 +40,18 @@ const Login: React.FC<Props> = ({ onLogin }) => {
   };
 
   return (
-    <div>
-      <button onClick={handleLogin} disabled={loading}>
-        {loading ? 'Logging in...' : 'Access star search'}
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="login-title">Explore Distant Stars and Exoplanets</h1>
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="login-button"
+        >
+          {loading ? 'Establishing connection...' : 'Begin Exploration'}
+        </button>
+        {error && <p className="login-error">{error}</p>}
+      </div>
     </div>
   );
 };
