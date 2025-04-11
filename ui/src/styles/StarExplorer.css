@@ -1,0 +1,48 @@
+body {
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(ellipse at top, #0d0d2b 0%, #000 100%);
+    color: white;
+    margin: 0;
+    padding: 0;
+  }
+  
+  input, .login-button, .search-box, .star-info {
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .search-box {
+    background-color: #1b2a4e;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,255,0.3);
+    color: white;
+    width: 100%;
+  }
+  
+  .search-suggestions {
+    background: #1b2a4e;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 6px;
+  }
+  
+  .star-info {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.1);
+    margin-top: 2rem;
+  }
+  
+  .tooltip {
+    background: #222;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+  }
+  

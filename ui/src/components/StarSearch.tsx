@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Star } from "../types";
+import '../styles/StarSearch.css';
 
 const baseUrl = import.meta.env.VITE_ASTRO_API_URL;
 
@@ -40,7 +41,7 @@ const StarSearch: React.FC<Props> = ({ onSelect }) => {
     <div className="relative w-full max-w-md mx-auto">
       <input
         type="text"
-        className="w-full border p-2 rounded shadow"
+        className="star-search-input"
         placeholder="Search for a star..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -53,7 +54,7 @@ const StarSearch: React.FC<Props> = ({ onSelect }) => {
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => {
                 onSelect(star);
-                setQuery(star.name);
+                // setQuery(star.name);
                 setSuggestions([]);
               }}
             >

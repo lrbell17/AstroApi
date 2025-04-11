@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/Login.css';
 
 const baseUrl = import.meta.env.VITE_ASTRO_API_URL;
 
