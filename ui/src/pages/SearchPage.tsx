@@ -8,8 +8,8 @@ const SearchPage: React.FC = () => {
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
 
   return (
-    <div className="search-page-container">
-      <div className="search-card">
+    <div className="container">
+      <div className="card">
         <StarSearch onSelect={setSelectedStar} />
         <SelectedStar star={selectedStar} />
       </div>

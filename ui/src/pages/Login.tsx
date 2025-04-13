@@ -41,9 +41,9 @@ const Login: React.FC<Props> = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1 className="login-title">Explore Distant Stars and Exoplanets</h1>
+    <div className="container">
+      <div className="card">
+        <h1 className="title">Explore Distant Stars and Exoplanets</h1>
         <button
           onClick={handleLogin}
           disabled={loading}

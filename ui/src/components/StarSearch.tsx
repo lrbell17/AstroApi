@@ -54,7 +54,7 @@ const StarSearch: React.FC<Props> = ({ onSelect }) => {
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => {
                 onSelect(star);
-                // setQuery(star.name);
+                setQuery("");
                 setSuggestions([]);
               }}
             >
