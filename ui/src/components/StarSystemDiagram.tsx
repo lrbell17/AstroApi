@@ -1,46 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Star } from '../types';
+import SvgTooltip from './Tooltip';
 import '../styles/StarSystemDiagram.css';
-
-interface SvgTooltipProps {
-  x: number;
-  y: number;
-  title: string;
-  content: React.ReactNode;
-}
-
-const SvgTooltip: React.FC<SvgTooltipProps> = ({ x, y, title, content }) => {
-  if (typeof content === 'string') {
-    return (
-      <g transform={`translate(${x}, ${y})`}>
-        <rect x="-100" y="-45" width="200" height="40" rx="5" ry="5" fill="rgba(0, 0, 0, 0.8)" filter="url(#drop-shadow)" />
-        <text x="0" y="-30" textAnchor="middle" fill="white" fontWeight="bold" fontSize="12">{title}</text>
-        <text x="0" y="-15" textAnchor="middle" fill="white" fontSize="10">{content}</text>
-      </g>
-    );
-  }
-
-  if (typeof content === 'object' && content !== null) {
-    const lines = Object.entries(content);
-    const lineHeight = 15;
-    const boxHeight = 30 + (lines.length * lineHeight);
-
-    return (
-      <g transform={`translate(${x}, ${y})`}>
-        <rect x="-100" y="-55" width="200" height={boxHeight} rx="5" ry="5" fill="rgba(0, 0, 0, 0.8)" filter="url(#drop-shadow)" />
-        <text x="0" y="-35" textAnchor="middle" fill="white" fontWeight="bold" fontSize="12">{title}</text>
-        {lines.map(([key, value], index) => (
-          <text key={key} x="-95" y={-20 + (index * lineHeight)} textAnchor="start" fill="white" fontSize="10">
-            <tspan fontWeight="bold">{key}: </tspan>
-            <tspan>{value}</tspan>
-          </text>
-        ))}
-      </g>
-    );
-  }
-
-  return null;
-};
 
 interface Props {
   star: Star;
@@ -81,7 +42,7 @@ const StarSystemDiagram: React.FC<Props> = ({ star }) => {
     switch (type) {
       case 'star':
         return {
-          title: star.name,
+          title: "Star " + star.name,
           content: {
             "Mass": `${formatValue(star.mass?.value)} ${star.mass?.unit ?? ''}`,
             "Radius": `${formatValue(star.radius?.value)} ${star.radius?.unit ?? ''}`,
@@ -100,7 +61,7 @@ const StarSystemDiagram: React.FC<Props> = ({ star }) => {
       case 'planet':
         const planet = star.planets[index];
         return {
-          title: planet.name,
+          title: "Planet " + planet.name,
           content: {
             "Mass": `${formatValue(planet.mass?.value)} ${planet.mass?.unit ?? ''}`,
             "Radius": `${formatValue(planet.radius?.value)} ${planet.radius?.unit ?? ''}`,
@@ -208,6 +169,8 @@ const StarSystemDiagram: React.FC<Props> = ({ star }) => {
             y={tooltipPosition.y}
             title={tooltipData.title}
             content={tooltipData.content}
+            svgWidth={baseSvgSize}
+            svgHeight={baseSvgSize}
           />
         )}
       </svg>
