@@ -14,6 +14,8 @@ api:
   jwk_path: /app/conf/jwk.json
   rsa_private_path: /app/conf/private.pem
   cors_allowed_origins: http://localhost:3000
+  ssl_cert_path: /app/conf/certs/cert.pem
+  ssl_key_path: /app/conf/certs/key.pem
 logger:
   log_level: INFO
   log_file: /app/logs/astroapi.log

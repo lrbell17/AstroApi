@@ -18,6 +18,8 @@ COPY --from=builder /build/astroapi /app/bin/
 COPY ./docker/conf/config.yaml /app/conf/
 COPY ./docker/conf/private.pem /app/conf/
 COPY ./docker/conf/jwk.json /app/conf/
+COPY ./docker/conf/certs/cert.pem /app/conf/certs/
+COPY ./docker/conf/certs/key.pem /app/conf/certs/
 COPY ./docker/data/ /app/data/
 
 RUN chmod +x /app/bin/astroapi

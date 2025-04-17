@@ -15,8 +15,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const port = ":8080"
-
 func main() {
 
 	// Get config file path from flags and initialize config
@@ -46,8 +44,6 @@ func main() {
 	}
 
 	// Start API
-	log.Infof("Starting Astro API on port %v", port)
-
 	starRepo := repos.NewStarRepo(database.DB)
 	starService := services.NewStarService(starRepo)
 	starHandler := handlers.NewStarHandler(*starService)
@@ -58,7 +54,6 @@ func main() {
 
 	authHandler := handlers.NewAuthHandler()
 
-	r := api.SetupRouter(authHandler, exoplanetHandler, starHandler)
-	r.Run(port)
+	api.SetupRouter(authHandler, exoplanetHandler, starHandler)
 
 }
