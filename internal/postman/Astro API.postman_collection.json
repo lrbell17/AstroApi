@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "698c49e2-997a-47a4-a904-d8196641070e",
+		"name": "Astro API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26977373"
+	},
+	"item": [
+		{
+			"name": "Exoplanets",
+			"item": [
+				{
+					"name": "Get exoplanet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/exoplanets/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"exoplanets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add exoplanet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Earth\",\n    \"star_id\": 5850,\n    \"mass\": 1,\n    \"radius\": 1,\n    \"dist\": 1,\n    \"orbital_period\": 365\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/exoplanets",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"exoplanets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get habitable planets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/exoplanets/habitable",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"exoplanets",
+								"habitable"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stars",
+			"item": [
+				{
+					"name": "Get star",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/stars/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"stars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add star",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"The Sun\",\n    \"mass\": 1.0,\n    \"radius\": 1.0,\n    \"temp\": 5778.0\n}       ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/stars",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"stars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search star by name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/stars?search=uma&limit=10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"stars"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "uma"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
